@@ -1,0 +1,3 @@
+import type {MetadataRoute} from "next";
+import {getArticles,getProducts} from "@/lib/api";
+export default async function sitemap():Promise<MetadataRoute.Sitemap>{const base=process.env.NEXT_PUBLIC_SITE_URL||"http://localhost:3000";const [products,articles]=await Promise.all([getProducts(),getArticles()]);return [{url:base,lastModified:new Date()},{url:base+"/productos",lastModified:new Date()},{url:base+"/blog",lastModified:new Date()},...products.map(p=>({url:base+"/productos/"+encodeURIComponent(p.slug),lastModified:new Date()})),...articles.map(p=>({url:base+"/blog/"+encodeURIComponent(p.slug),lastModified:new Date(p.date)}))]}
