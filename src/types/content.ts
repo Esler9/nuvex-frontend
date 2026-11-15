@@ -1,0 +1,2 @@
+export type Product = { id:number; name:string; slug:string; permalink:string; prices?:{price:string; regular_price:string; sale_price:string;currency_code:string;currency_minor_unit:number}; images?:Array<{id:number;src:string;alt:string}>; short_description?:string;description?:string;is_purchasable?:boolean;is_in_stock?:boolean };
+export type Article = {id:number;slug:string;date:string;title:{rendered:string};excerpt:{rendered:string};content:{rendered:string}};
