@@ -1,0 +1,1 @@
+Follow ../AGENTS.md as repository-wide instructions. Maintain modern premium mobile-first design, WCAG-friendly semantic UI, server-only secrets, WordPress REST API + WooCommerce Store API separation, and never invent prices/stock or put production credentials in source control.
