@@ -7,7 +7,9 @@ import { useStore } from "@/components/store/store-provider";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
 const accountItems = ["Mis compras", "Historial de pedidos", "Formas de pago guardadas", "Mis direcciones"];
-const rowClass = "flex min-h-12 w-full items-center justify-between gap-3 rounded-xl px-3 text-left font-medium transition-colors hover:bg-surface";
+/* Línea gris de 1px con ~16px arriba y abajo: el margen negativo compensa el space-y-7 del nav. */
+const separatorClass = "-mt-3 mb-4 border-0 border-t border-border";
+const rowClass ="flex min-h-12 w-full items-center justify-between gap-3 rounded-xl px-3 text-left font-medium transition-colors hover:bg-surface";
 
 function SectionTitle({ children }: { children: string }) {
   return <h3 className="mb-1 px-3 text-xs font-bold uppercase tracking-[.18em] text-primary-strong">{children}</h3>;
@@ -41,6 +43,8 @@ export function MenuDrawer() {
           </ul>
         </section>
 
+        <hr className={separatorClass} />
+
         <section>
           <SectionTitle>Mi cuenta</SectionTitle>
           {!customer && <p className="mb-2 px-3 text-sm text-muted">Inicia sesión para ver tu información.</p>}
@@ -56,6 +60,8 @@ export function MenuDrawer() {
             ))}
           </ul>
         </section>
+
+        <hr className={separatorClass} />
 
         <section>
           <SectionTitle>Ayuda</SectionTitle>

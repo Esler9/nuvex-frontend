@@ -36,8 +36,8 @@ export function FavoritesButton() {
   const n = favorites.length;
   const label = n === 1 ? "Favoritos, 1 producto guardado" : `Favoritos, ${n} productos guardados`;
   return (
-    <button type="button" onClick={() => openPanel("favorites")} aria-label={label} aria-haspopup="dialog" className={iconButton}>
-      <Heart aria-hidden className="size-6 text-foreground" strokeWidth={1.75} />
+    <button type="button" onClick={() => openPanel("favorites")} aria-label={label} aria-haspopup="dialog" className={`group ${iconButton}`}>
+      <Heart aria-hidden className="size-6 text-foreground transition-colors duration-200 group-hover:text-accent group-active:text-accent" strokeWidth={1.75} />
     </button>
   );
 }

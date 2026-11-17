@@ -17,6 +17,7 @@
   --accent-text:#c2410c;     /* naranja oscuro para texto */
   --accent-soft:#fff1e8;
   --whatsapp:#0f7a3f;
+  --whatsapp-bright:#25d366; /* verde WhatsApp de marca: fondo del botón del footer */
   --image-well:#eef0f3;      /* fondo gris de imagen (tarjeta variante 2) */
   --star:#f5b301;            /* estrella de calificación */
   --success:#15803d;         /* verde: compatible, compra verificada, envío gratis alcanzado */
@@ -41,6 +42,7 @@
   --color-accent-text:var(--accent-text);
   --color-accent-soft:var(--accent-soft);
   --color-whatsapp:var(--whatsapp);
+  --color-whatsapp-bright:var(--whatsapp-bright);
   --color-image-well:var(--image-well);
   --color-star:var(--star);
   --color-success:var(--success);

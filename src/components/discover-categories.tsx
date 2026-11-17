@@ -56,7 +56,7 @@ export function DiscoverCategories({ title, subtitle, categories }: Props) {
                     {c.image ? (
                       <img src={c.image.src} alt="" width={80} height={80} loading="lazy" decoding="async" className="size-full object-cover" />
                     ) : (
-                      <Icon aria-hidden className="size-7 text-primary sm:size-8" strokeWidth={1.5} />
+                      <Icon aria-hidden className="size-7 text-accent sm:size-8" strokeWidth={1.5} />
                     )}
                   </span>
                   <span className="text-xs font-medium leading-tight text-foreground group-hover:text-primary-strong sm:text-sm">{c.label}</span>

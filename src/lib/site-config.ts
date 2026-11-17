@@ -11,7 +11,7 @@ export const siteConfig = {
   freeShippingThreshold: 35000,
   /** Solo dígitos con código de país, p. ej. 50212345678. */
   whatsappNumber: (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "").replace(/\D/g, ""),
-  address: "Dirección de ejemplo, Zona 10, Ciudad de Guatemala",
+  address: "Barrio El Paraíso, El Chal, Petén",
   social: {
     facebook: "https://www.facebook.com/",
     instagram: "https://www.instagram.com/",

@@ -35,12 +35,12 @@ export function Header() {
     <header className="border-b border-border bg-card/95 backdrop-blur">
       <div className="container-shell flex h-16 items-center gap-1 md:gap-6">
         <div className="flex items-center gap-1">
+          <MenuButton />
           {/* Placeholder del logo: reemplázalo por la imagen oficial de la marca. */}
-          <Link href="/" className="flex min-h-11 items-center pr-1 text-2xl font-black tracking-tight text-foreground" aria-label={`${siteConfig.name}, inicio`}>
+          <Link href="/" className="flex min-h-11 items-center pl-1 text-2xl font-black tracking-tight text-foreground" aria-label={`${siteConfig.name}, inicio`}>
             {siteConfig.name.toUpperCase()}
             <span className="text-primary">.</span>
           </Link>
-          <MenuButton />
         </div>
         <SearchForm id="search-desktop" className="mx-auto hidden w-full max-w-xl md:block" />
         <div className="ml-auto flex items-center md:ml-0">

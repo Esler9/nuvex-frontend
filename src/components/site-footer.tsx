@@ -12,7 +12,7 @@ const socials = [
 
 export function SiteFooter() {
   const whatsapp = whatsappLink("Hola, quiero información sobre sus productos.");
-  const whatsappClass = "inline-flex min-h-12 items-center gap-2 rounded-lg bg-whatsapp px-6 font-bold text-white";
+  const whatsappClass = "inline-flex min-h-12 items-center gap-2 rounded-lg bg-whatsapp-bright px-6 font-bold text-white";
 
   return (
     <footer className="mt-16 bg-navy text-white">
@@ -36,7 +36,7 @@ export function SiteFooter() {
                 <WhatsAppIcon className="size-5" /> Escríbenos por WhatsApp
               </a>
             ) : (
-              <span className={`${whatsappClass} opacity-60`} title="Configura NEXT_PUBLIC_WHATSAPP_NUMBER">
+              <span className={whatsappClass} title="Configura NEXT_PUBLIC_WHATSAPP_NUMBER">
                 <WhatsAppIcon className="size-5" /> WhatsApp próximamente
               </span>
             )}
