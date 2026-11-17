@@ -1,5 +1,33 @@
-import Link from "next/link";
-import {getProducts} from "@/lib/api";
-import {ProductCard} from "@/components/product-card";
-import {EmptyState} from "@/components/empty-state";
-export default async function HomePage(){const products=await getProducts();return <><section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-accent-soft via-background to-primary-soft"><div className="container-shell grid min-h-[480px] items-center gap-12 py-24 md:grid-cols-2"><div><p className="text-sm font-bold uppercase tracking-[.25em] text-primary">Nueva generación digital</p><h1 className="mt-6 text-5xl font-black leading-tight tracking-[-.06em] sm:text-7xl">Lo extraordinario <span className="text-accent">empieza aquí.</span></h1><p className="mt-6 max-w-lg text-muted">Explora productos seleccionados con una experiencia rápida, simple y diseñada para ti.</p><Link href="/productos" className="mt-8 inline-block rounded-full bg-accent px-8 py-4 font-bold text-white transition-colors hover:bg-accent-strong">Explorar colección →</Link></div><div className="flex aspect-square items-center justify-center rounded-[36px] border border-border bg-surface text-center"><div><p className="text-7xl text-accent">✦</p><p className="mt-4 text-xl font-bold">Innovación sin límites</p></div></div></div></section><section className="container-shell py-20"><div className="mb-10 flex items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[.2em] text-primary">Selección destacada</p><h2 className="mt-3 text-3xl font-bold">Encuentra tu próximo favorito</h2></div><Link href="/productos" className="text-sm font-semibold text-primary hover:underline">Ver todo →</Link></div>{products.length?<div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{products.slice(0,8).map(p=><ProductCard key={p.id} product={p}/>)}</div>:<EmptyState kind="productos"/>}</section></>}
+import type { Metadata } from "next";
+import { getHomeSections, isDemoCatalog } from "@/lib/api";
+import { siteConfig } from "@/lib/site-config";
+import { HeroCarousel } from "@/components/hero-carousel";
+import { ProductRail } from "@/components/product-rail";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+export default async function HomePage() {
+  const sections = await getHomeSections();
+  return (
+    <>
+      <h1 className="sr-only">{siteConfig.name}: accesorios para celulares en Guatemala</h1>
+      <HeroCarousel slides={siteConfig.slides} />
+
+      <section aria-labelledby="categorias" className="container-shell py-10 sm:py-14">
+        <h2 id="categorias" className="text-2xl font-black tracking-tight sm:text-3xl">
+          Categorías
+        </h2>
+        {isDemoCatalog && (
+          <p className="mt-3 rounded-xl bg-primary-soft px-4 py-3 text-sm text-foreground">
+            Productos de ejemplo: conecta WooCommerce para mostrar tu catálogo real.
+          </p>
+        )}
+        <div className="mt-8 space-y-10 sm:space-y-12">
+          {sections.map((section) => (
+            <ProductRail key={section.slug} section={section} />
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
