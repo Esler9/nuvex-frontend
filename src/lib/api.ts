@@ -1,4 +1,4 @@
-import type { Article, Category, HomeSection, Product, WpPage } from "@/types/content";
+import type { Article, Category, DiscoverCategory, HomeSection, Product, WpPage } from "@/types/content";
 import { siteConfig } from "@/lib/site-config";
 import { sampleByCategory, sampleProducts, sampleSections } from "@/lib/sample-catalog";
 
@@ -75,6 +75,17 @@ export async function getHomeSections(): Promise<HomeSection[]> {
       return { ...section, products };
     }),
   );
+}
+
+/** Círculos de "Descubre más": usa la imagen de cada categoría en WooCommerce si existe. */
+export async function getDiscoverCategories(): Promise<DiscoverCategory[]> {
+  const items: DiscoverCategory[] = siteConfig.discover.categories;
+  if (isDemoCatalog) return items;
+  const categories = await getCategories();
+  return items.map((item) => {
+    const image = categories.find((c) => c.slug === item.slug)?.image;
+    return { ...item, image: image?.src ? { src: image.src, alt: image.alt || "" } : null };
+  });
 }
 
 export async function getArticles(): Promise<Article[]> {

@@ -20,7 +20,16 @@ export type Product = {
   is_in_stock?: boolean;
 };
 
-export type Category = { id: number; name: string; slug: string; count: number };
+export type Category = { id: number; name: string; slug: string; count: number; image?: { src: string; alt: string } | null };
+
+/** Categoría en círculo de la sección "Descubre más". */
+export type DiscoverCategory = {
+  label: string;
+  slug: string;
+  /** Ícono de respaldo mientras la categoría no tenga imagen en WooCommerce. */
+  icon: "usb" | "otg" | "glass" | "mic" | "ram" | "headphones" | "charger" | "stand";
+  image?: { src: string; alt: string } | null;
+};
 
 export type Article = {
   id: number;

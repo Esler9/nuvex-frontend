@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { getHomeSections, isDemoCatalog } from "@/lib/api";
+import { getDiscoverCategories, getHomeSections, isDemoCatalog } from "@/lib/api";
+import { DiscoverCategories } from "@/components/discover-categories";
 import { siteConfig } from "@/lib/site-config";
 import { HeroCarousel } from "@/components/hero-carousel";
 import { ProductRail } from "@/components/product-rail";
@@ -7,7 +8,7 @@ import { ProductRail } from "@/components/product-rail";
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function HomePage() {
-  const sections = await getHomeSections();
+  const [sections, discover] = await Promise.all([getHomeSections(), getDiscoverCategories()]);
   return (
     <>
       <h1 className="sr-only">{siteConfig.name}: accesorios para celulares en Guatemala</h1>
@@ -26,6 +27,9 @@ export default async function HomePage() {
           {sections.map((section) => (
             <ProductRail key={section.slug} section={section} />
           ))}
+        </div>
+        <div className="mt-12">
+          <DiscoverCategories title={siteConfig.discover.title} subtitle={siteConfig.discover.subtitle} categories={discover} />
         </div>
       </section>
     </>

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 async function categoryName(slug: string) {
-  const fromConfig = [...siteConfig.menuCategories.map((c) => ({ name: c.label, slug: c.slug })), ...siteConfig.homeSections.map((s) => ({ name: s.title, slug: s.slug }))].find((c) => c.slug === slug);
+  const fromConfig = [...siteConfig.menuCategories.map((c) => ({ name: c.label, slug: c.slug })), ...siteConfig.homeSections.map((s) => ({ name: s.title, slug: s.slug })), ...siteConfig.discover.categories.map((c) => ({ name: c.label, slug: c.slug }))].find((c) => c.slug === slug);
   if (isDemoCatalog || fromConfig) return fromConfig?.name;
   return (await getCategories()).find((c) => c.slug === slug)?.name;
 }

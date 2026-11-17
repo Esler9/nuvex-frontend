@@ -1,4 +1,4 @@
-import type { HeroSlide } from "@/types/content";
+import type { DiscoverCategory, HeroSlide } from "@/types/content";
 
 /**
  * Ajustes editables de la tienda. Los textos marcados como "ejemplo" son
@@ -30,6 +30,24 @@ export const siteConfig = {
     { title: "Accesorios Samsung", slug: "accesorios-samsung" },
     { title: "Adaptadores, memorias y más", slug: "adaptadores-memorias" },
   ],
+  /**
+   * Sección "Descubre más" (círculos debajo de las categorías). El slug debe existir
+   * en WooCommerce; la foto del círculo es la imagen de la categoría en WooCommerce.
+   */
+  discover: {
+    title: "Descubre más",
+    subtitle: "Encuentra todo lo que tu celular necesita",
+    categories: [
+      { label: "Memorias USB", slug: "memorias-usb", icon: "usb" },
+      { label: "Adaptadores OTG", slug: "adaptadores-otg", icon: "otg" },
+      { label: "Vidrios templados", slug: "vidrios-templados", icon: "glass" },
+      { label: "Micrófonos inalámbricos", slug: "microfonos-inalambricos", icon: "mic" },
+      { label: "Memorias RAM", slug: "memorias-ram", icon: "ram" },
+      { label: "Audífonos", slug: "audifonos", icon: "headphones" },
+      { label: "Cargadores", slug: "cargadores", icon: "charger" },
+      { label: "Soportes", slug: "soportes", icon: "stand" },
+    ] satisfies DiscoverCategory[],
+  },
   helpLinks: [
     { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
     { label: "Políticas de envío y garantía", href: "/politicas-de-envio-y-garantia" },
