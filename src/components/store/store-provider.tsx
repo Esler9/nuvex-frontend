@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { cartStore } from "@/lib/cart-store";
 import { favoritesStore } from "@/lib/favorites-store";
+import { cashOnDeliveryAvailable } from "@/lib/product-meta";
 import type { CartLine, Product } from "@/types/content";
 
 type Panel = "menu" | "cart" | "account" | "favorites";
@@ -43,6 +44,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       minorUnit: product.prices.currency_minor_unit,
       currency: product.prices.currency_code || "GTQ",
       image: product.images?.[0]?.src,
+      cod: cashOnDeliveryAvailable(product),
     });
     return true;
   }, []);

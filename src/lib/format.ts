@@ -10,6 +10,13 @@ export function money(p: Product) {
   return formatMoney(Number(p.prices.price), p.prices.currency_minor_unit, p.prices.currency_code || "GTQ");
 }
 
+const entities: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", "#39": "'", "#8211": "–", "#8212": "—", "#8220": "“", "#8221": "”", "#8217": "’" };
+
+/** Quita etiquetas HTML y decodifica entidades comunes. El resultado es texto plano. */
 export function stripTags(html: string) {
-  return html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&(#?\w+);/g, (m, code: string) => entities[code] ?? m)
+    .replace(/\s+/g, " ")
+    .trim();
 }

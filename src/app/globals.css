@@ -19,6 +19,9 @@
   --whatsapp:#0f7a3f;
   --image-well:#eef0f3;      /* fondo gris de imagen (tarjeta variante 2) */
   --star:#f5b301;            /* estrella de calificación */
+  --success:#15803d;         /* verde: compatible, compra verificada, envío gratis alcanzado */
+  --danger:#b91c1c;          /* rojo: no compatible */
+  --divider:#d9dce2;         /* líneas separadoras */
 }
 @theme inline{
   --font-sans:var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -40,6 +43,9 @@
   --color-whatsapp:var(--whatsapp);
   --color-image-well:var(--image-well);
   --color-star:var(--star);
+  --color-success:var(--success);
+  --color-danger:var(--danger);
+  --color-divider:var(--divider);
   --shadow-card:0 1px 2px rgb(16 24 40 / .04), 0 2px 8px rgb(16 24 40 / .04);
   --shadow-card-hover:0 4px 16px rgb(16 24 40 / .08);
 }
@@ -83,3 +89,7 @@ html:has(dialog[open]){overflow:hidden}
   .discover-item:nth-child(6){animation-delay:.15s}.discover-item:nth-child(7){animation-delay:.18s}
   .discover-item:nth-child(n+8){animation-delay:.21s}
 }
+
+/* Detalle de producto */
+body:has(.buy-bar){padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+.sold-out-line{background:linear-gradient(to top right,transparent calc(50% - 1px),var(--muted) calc(50% - 1px),var(--muted) calc(50% + 1px),transparent calc(50% + 1px))}

@@ -19,12 +19,52 @@ export type Product = {
   average_rating?: string;
   review_count?: number;
   brands?: Array<{ id: number; name: string; slug: string }>;
-  attributes?: Array<{ id: number; name: string; terms: Array<{ id: number; name: string; slug: string }> }>;
+  attributes?: ProductAttribute[];
   tags?: Array<{ id: number; name: string; slug: string }>;
   short_description?: string;
   description?: string;
   is_purchasable?: boolean;
   is_in_stock?: boolean;
+  type?: string;
+  sku?: string;
+  /** Variaciones de un producto variable (Store API). */
+  variations?: Array<{ id: number; attributes: Array<{ name: string; value: string }> }>;
+  stock_availability?: { text: string; class: string };
+  /** WooCommerce lo envía solo cuando quedan pocas unidades. */
+  low_stock_remaining?: number | null;
+};
+
+export type ProductAttribute = {
+  id: number;
+  name: string;
+  taxonomy?: string | null;
+  has_variations?: boolean;
+  terms: Array<{ id: number; name: string; slug: string; default?: boolean }>;
+};
+
+/** Variación resuelta (color, capacidad...) con su propio precio, existencia e imágenes. */
+export type ProductOption = { id: number; label: string; product: Product };
+export type ProductOptions = { title: string; kind: "color" | "pill"; items: ProductOption[]; defaultId: number } | null;
+
+export type ProductReview = {
+  id: number;
+  reviewer: string;
+  review: string;
+  rating: number;
+  verified: boolean;
+  date_created: string;
+  images?: Array<{ src: string; alt: string }>;
+};
+
+/** Información extraída de la descripción del producto en WooCommerce. */
+export type ProductInfo = {
+  introHtml: string;
+  features: string[];
+  specs: Array<[string, string]>;
+  box: string[];
+  warranty: string;
+  faqs: Array<{ q: string; a: string }>;
+  video: string | null;
 };
 
 export type Category = { id: number; name: string; slug: string; count: number; description?: string; image?: { src: string; alt: string } | null };
@@ -71,6 +111,8 @@ export type CartLine = {
   currency: string;
   image?: string;
   quantity: number;
+  /** false si el producto no admite pago contra entrega. */
+  cod?: boolean;
 };
 
 export type HeroSlide = {

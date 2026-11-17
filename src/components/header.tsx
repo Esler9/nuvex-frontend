@@ -32,7 +32,7 @@ function SearchForm({ id, className = "" }: { id: string; className?: string }) 
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
+    <header className="border-b border-border bg-card/95 backdrop-blur">
       <div className="container-shell flex h-16 items-center gap-1 md:gap-6">
         <div className="flex items-center gap-1">
           {/* Placeholder del logo: reemplázalo por la imagen oficial de la marca. */}

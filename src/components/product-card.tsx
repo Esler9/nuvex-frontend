@@ -5,6 +5,7 @@ import { brandOrMaterial, discountPercent, hasFastShipping, hasFreeShipping, rat
 import { siteConfig } from "@/lib/site-config";
 import type { CardVariant, Product } from "@/types/content";
 import { FavoriteButton } from "@/components/favorite-button";
+import { ProductBadge } from "@/components/product-badge";
 
 type Props = { product: Product; variant?: CardVariant; headingLevel?: 2 | 3 | 4 };
 
@@ -49,6 +50,9 @@ export function ProductCard({ product, variant = 2, headingLevel = 2 }: Props) {
             </span>
           )}
           <FavoriteButton product={product} size="sm" className="absolute right-1.5 top-1.5 z-10" />
+          <span className="absolute bottom-1.5 left-1.5">
+            <ProductBadge product={product} size="sm" />
+          </span>
         </div>
       </div>
 

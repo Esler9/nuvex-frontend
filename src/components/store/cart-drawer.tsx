@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Smartphone, Trash2, Truck } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
 import { useStore } from "@/components/store/store-provider";
@@ -10,6 +11,7 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 export function CartDrawer() {
   const { panel, closePanel, lines, subtotal, count, setQuantity, removeItem } = useStore();
   const close = () => closePanel("cart");
+  const [method, setMethod] = useState<string>("");
   const minorUnit = lines[0]?.minorUnit ?? 2;
   const currency = lines[0]?.currency ?? "GTQ";
   const fmt = (value: number) => formatMoney(value, minorUnit, currency);
@@ -18,15 +20,31 @@ export function CartDrawer() {
   const remaining = Math.max(threshold - subtotal, 0);
   const progress = Math.min((subtotal / threshold) * 100, 100);
 
+  // Contra entrega solo si todos los productos del carrito lo permiten.
+  const methods = siteConfig.paymentMethods.filter((m) => m !== "Contra entrega" || lines.every((l) => l.cod !== false));
+  const payment = methods.includes(method as (typeof methods)[number]) ? method : "";
+
   const orderText = [
     "Hola, quiero hacer este pedido:",
     ...lines.map((l) => `• ${l.quantity} × ${l.name} (${fmt(l.unitPrice * l.quantity)})`),
     `Subtotal: ${fmt(subtotal)}`,
+    `Forma de pago: ${payment}`,
   ].join("\n");
-  const checkoutHref = whatsappLink(orderText);
+  const checkoutHref = payment ? whatsappLink(orderText) : null;
 
   const footer = lines.length ? (
     <div className="space-y-4">
+      <fieldset>
+        <legend className="text-sm font-semibold">Forma de pago</legend>
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {methods.map((m) => (
+            <label key={m} className={`flex min-h-11 cursor-pointer items-center justify-center rounded-lg border px-2 text-center text-xs font-semibold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary ${payment === m ? "border-primary bg-primary-soft text-primary-strong" : "border-border text-foreground"}`}>
+              <input type="radio" name="payment-method" value={m} checked={payment === m} onChange={() => setMethod(m)} className="sr-only" />
+              {m}
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <div className="flex items-center justify-between text-base">
         <span className="text-muted">Subtotal</span>
         <span className="text-lg font-bold">{fmt(subtotal)}</span>
@@ -41,9 +59,11 @@ export function CartDrawer() {
         </button>
       )}
       <p className="text-center text-xs text-muted">
-        {checkoutHref
-          ? "Confirmamos tu pedido, envío y forma de pago por WhatsApp. El pago en línea estará disponible pronto."
-          : "El pago en línea aún no está habilitado."}{" "}
+        {!payment
+          ? "Elige una forma de pago para continuar."
+          : checkoutHref
+            ? "Confirmamos tu pedido, envío y pago por WhatsApp."
+            : "El pedido por WhatsApp aún no está configurado."}{" "}
         Precios y existencias se confirman al finalizar.
       </p>
     </div>
@@ -67,14 +87,14 @@ export function CartDrawer() {
               <Truck aria-hidden className="size-4 shrink-0 text-primary-strong" />
               {remaining > 0 ? (
                 <span>
-                  Te faltan <strong>{fmt(remaining)}</strong> para envío gratis
+                  Agrega <strong>{fmt(remaining)}</strong> más y tu envío es gratis
                 </span>
               ) : (
-                <span>¡Tu pedido tiene envío gratis!</span>
+                <span className="font-semibold text-success">¡Tu envío es gratis!</span>
               )}
             </p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-card" aria-hidden>
-              <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${progress}%` }} />
+              <div className={`h-full rounded-full transition-[width] ${remaining > 0 ? "bg-primary" : "bg-success"}`} style={{ width: `${progress}%` }} />
             </div>
           </div>
 
