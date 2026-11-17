@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Heart, Menu, ShoppingCart, User } from "lucide-react";
 import { useStore } from "@/components/store/store-provider";
 
 const iconButton = "relative grid size-11 place-items-center rounded-full text-foreground transition-colors hover:bg-surface hover:text-primary-strong";
@@ -27,6 +27,17 @@ export function AccountButton() {
   return (
     <button type="button" onClick={() => openPanel("account")} aria-label="Iniciar sesión o crear cuenta" aria-haspopup="dialog" className={iconButton}>
       <User aria-hidden className="size-6" />
+    </button>
+  );
+}
+
+export function FavoritesButton() {
+  const { openPanel, favorites } = useStore();
+  const n = favorites.length;
+  const label = n === 1 ? "Favoritos, 1 producto guardado" : `Favoritos, ${n} productos guardados`;
+  return (
+    <button type="button" onClick={() => openPanel("favorites")} aria-label={label} aria-haspopup="dialog" className={iconButton}>
+      <Heart aria-hidden className="size-6 text-foreground" strokeWidth={1.75} />
     </button>
   );
 }

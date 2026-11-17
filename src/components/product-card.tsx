@@ -3,6 +3,7 @@ import { Smartphone } from "lucide-react";
 import { money } from "@/lib/format";
 import type { Product } from "@/types/content";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { FavoriteButton } from "@/components/favorite-button";
 
 type Props = { product: Product; headingLevel?: 2 | 3 | 4 };
 
@@ -12,7 +13,7 @@ export function ProductCard({ product, headingLevel = 2 }: Props) {
   const href = "/productos/" + encodeURIComponent(product.slug);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card transition-shadow hover:shadow-card-hover">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card transition-shadow hover:shadow-card-hover">
       <Link href={href} className="block" tabIndex={-1} aria-hidden>
         <div className="flex aspect-square items-center justify-center bg-surface">
           {img ? (
@@ -25,6 +26,7 @@ export function ProductCard({ product, headingLevel = 2 }: Props) {
           )}
         </div>
       </Link>
+      <FavoriteButton product={product} className="absolute right-2 top-2" />
       <div className="flex flex-1 flex-col p-3 sm:p-4">
         <Heading className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 sm:text-base sm:leading-6">
           <Link href={href} className="hover:text-primary-strong">

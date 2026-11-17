@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
-import { AccountButton, CartButton, MenuButton } from "@/components/store/header-actions";
+import { AccountButton, CartButton, FavoritesButton, MenuButton } from "@/components/store/header-actions";
 
 export function AnnouncementBar() {
   return (
@@ -45,6 +45,7 @@ export function Header() {
         <SearchForm id="search-desktop" className="mx-auto hidden w-full max-w-xl md:block" />
         <div className="ml-auto flex items-center md:ml-0">
           <AccountButton />
+          <FavoritesButton />
           <CartButton />
         </div>
       </div>

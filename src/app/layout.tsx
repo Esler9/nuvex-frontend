@@ -7,6 +7,7 @@ import { StoreProvider } from "@/components/store/store-provider";
 import { MenuDrawer } from "@/components/store/menu-drawer";
 import { CartDrawer } from "@/components/store/cart-drawer";
 import { AccountDialog } from "@/components/store/account-dialog";
+import { FavoritesDrawer } from "@/components/store/favorites-drawer";
 import { siteConfig } from "@/lib/site-config";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <MenuDrawer />
           <CartDrawer />
           <AccountDialog />
+          <FavoritesDrawer />
         </StoreProvider>
       </body>
     </html>

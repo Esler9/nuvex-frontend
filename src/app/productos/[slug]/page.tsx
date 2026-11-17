@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Smartphone } from "lucide-react";
 import { getProduct, money } from "@/lib/api";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { FavoriteButton } from "@/components/favorite-button";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -37,8 +38,9 @@ export default async function ProductPage({ params }: Props) {
           <h1 className="text-3xl font-bold sm:text-4xl">{p.name}</h1>
           <p className="mt-4 text-3xl font-black text-foreground">{money(p)}</p>
           <p className="mt-2 text-sm text-muted">{p.is_in_stock === false ? "Agotado" : "Disponible"}</p>
-          <div className="mt-8 max-w-sm">
-            <AddToCartButton product={p} />
+          <div className="mt-8 flex max-w-sm items-center gap-3">
+            <div className="flex-1"><AddToCartButton product={p} /></div>
+            <FavoriteButton product={p} className="shrink-0 border border-border" />
           </div>
         </div>
       </div>
