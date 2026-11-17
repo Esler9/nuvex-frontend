@@ -41,7 +41,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       {products.length ? (
         <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard key={p.id} product={p} variant={siteConfig.homeSections.find((s) => s.slug === categoria)?.cardVariant ?? 2} />
           ))}
         </div>
       ) : (

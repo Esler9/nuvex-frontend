@@ -1,6 +1,7 @@
 import type { Article, Category, DiscoverCategory, HomeSection, Product, WpPage } from "@/types/content";
 import { siteConfig } from "@/lib/site-config";
 import { sampleByCategory, sampleProducts, sampleSections } from "@/lib/sample-catalog";
+import { parseCardVariant } from "@/lib/product-meta";
 
 export { money } from "@/lib/format";
 
@@ -72,7 +73,7 @@ export async function getHomeSections(): Promise<HomeSection[]> {
       const products = category
         ? ((await request<Product[]>(`${storeApi}/products?per_page=10&category=${category.id}`)) ?? [])
         : [];
-      return { ...section, products };
+      return { ...section, cardVariant: parseCardVariant(category?.description) ?? section.cardVariant, products };
     }),
   );
 }

@@ -17,6 +17,8 @@
   --accent-text:#c2410c;     /* naranja oscuro para texto */
   --accent-soft:#fff1e8;
   --whatsapp:#0f7a3f;
+  --image-well:#eef0f3;      /* fondo gris de imagen (tarjeta variante 2) */
+  --star:#f5b301;            /* estrella de calificación */
 }
 @theme inline{
   --font-sans:var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -36,6 +38,8 @@
   --color-accent-text:var(--accent-text);
   --color-accent-soft:var(--accent-soft);
   --color-whatsapp:var(--whatsapp);
+  --color-image-well:var(--image-well);
+  --color-star:var(--star);
   --shadow-card:0 1px 2px rgb(16 24 40 / .04), 0 2px 8px rgb(16 24 40 / .04);
   --shadow-card-hover:0 4px 16px rgb(16 24 40 / .08);
 }

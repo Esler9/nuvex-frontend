@@ -1,4 +1,4 @@
-import type { DiscoverCategory, HeroSlide } from "@/types/content";
+import type { CardVariant, DiscoverCategory, HeroSlide } from "@/types/content";
 
 /**
  * Ajustes editables de la tienda. Los textos marcados como "ejemplo" son
@@ -24,12 +24,20 @@ export const siteConfig = {
     { label: "Adaptadores", slug: "adaptadores" },
     { label: "Memorias y más", slug: "memorias" },
   ],
-  /** Tiras de productos de la página de inicio, en orden. */
+  /**
+   * Tiras de productos de la página de inicio, en orden.
+   * cardVariant es el estilo por defecto; se puede cambiar desde WooCommerce
+   * escribiendo "tarjeta: 1" o "tarjeta: 2" en la descripción de la categoría.
+   */
   homeSections: [
-    { title: "Accesorios iPhone", slug: "accesorios-iphone" },
-    { title: "Accesorios Samsung", slug: "accesorios-samsung" },
-    { title: "Adaptadores, memorias y más", slug: "adaptadores-memorias" },
-  ],
+    { title: "Accesorios iPhone", slug: "accesorios-iphone", cardVariant: 2 },
+    { title: "Accesorios Samsung", slug: "accesorios-samsung", cardVariant: 2 },
+    { title: "Adaptadores, memorias y más", slug: "adaptadores-memorias", cardVariant: 1 },
+  ] satisfies Array<{ title: string; slug: string; cardVariant: CardVariant }>,
+  /** Etiqueta "Envío rápido" en tarjetas de productos disponibles. Pon enabled: false para ocultarla. */
+  fastShipping: { enabled: true, label: "Envío rápido" },
+  /** Slug de la etiqueta de producto en WooCommerce que marca "Envío gratis". */
+  freeShippingTag: "envio-gratis",
   /**
    * Sección "Descubre más" (círculos debajo de las categorías). El slug debe existir
    * en WooCommerce; la foto del círculo es la imagen de la categoría en WooCommerce.

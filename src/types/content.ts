@@ -12,15 +12,25 @@ export type Product = {
     currency_code: string;
     currency_minor_unit: number;
   };
-  images?: Array<{ id: number; src: string; alt: string }>;
+  images?: Array<{ id: number; src: string; alt: string; thumbnail?: string }>;
   categories?: ProductCategoryRef[];
+  on_sale?: boolean;
+  /** Promedio de reseñas de WooCommerce, p. ej. "4.00". */
+  average_rating?: string;
+  review_count?: number;
+  brands?: Array<{ id: number; name: string; slug: string }>;
+  attributes?: Array<{ id: number; name: string; terms: Array<{ id: number; name: string; slug: string }> }>;
+  tags?: Array<{ id: number; name: string; slug: string }>;
   short_description?: string;
   description?: string;
   is_purchasable?: boolean;
   is_in_stock?: boolean;
 };
 
-export type Category = { id: number; name: string; slug: string; count: number; image?: { src: string; alt: string } | null };
+export type Category = { id: number; name: string; slug: string; count: number; description?: string; image?: { src: string; alt: string } | null };
+
+/** 1 = tarjeta toda blanca · 2 = imagen sobre fondo gris enmarcado. */
+export type CardVariant = 1 | 2;
 
 /** Categoría en círculo de la sección "Descubre más". */
 export type DiscoverCategory = {
@@ -49,7 +59,7 @@ export type WpPage = {
 };
 
 /** Tira de productos de una categoría en la página de inicio. */
-export type HomeSection = { title: string; slug: string; products: Product[] };
+export type HomeSection = { title: string; slug: string; cardVariant: CardVariant; products: Product[] };
 
 /** Línea del carrito local. Los precios se guardan en unidades menores (centavos). */
 export type CartLine = {
