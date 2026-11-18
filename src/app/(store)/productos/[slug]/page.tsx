@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: Props) {
       <ProductView product={product} options={options} style={style} video={info.video} delivery={deliveryEstimate()}>
         <ProductInfoSection info={info} />
         <hr className="border-divider" />
-        <ReviewsAndQuestions productId={product.id} rating={rating} faqs={info.faqs} initialReviews={reviews} />
+        <ReviewsAndQuestions productId={product.id} slug={product.slug} rating={rating} faqs={info.faqs} initialReviews={reviews} />
         <RecentlyViewed current={product} />
         <SuggestedProducts productId={product.id} category={product.categories?.[0]?.slug} />
       </ProductView>

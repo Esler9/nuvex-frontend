@@ -1,6 +1,6 @@
 import type { Article, CardVariant, Category, DiscoverCategory, HomeSection, Product, ProductOption, ProductOptions, ProductReview, WpPage } from "@/types/content";
 import { siteConfig } from "@/lib/site-config";
-import { sampleByCategory, sampleProducts, sampleReviews, sampleSections, sampleVariations } from "@/lib/sample-catalog";
+import { sampleByCategory, sampleComplementsFor, sampleProducts, sampleReviews, sampleSections, sampleVariations } from "@/lib/sample-catalog";
 import { parseCardVariant } from "@/lib/product-meta";
 
 export { money } from "@/lib/format";
@@ -102,6 +102,18 @@ export async function getProductReviews(productId: number, offset = 0, limit = 2
   if (isDemoCatalog) return (sampleReviews[productId] ?? []).slice(safeOffset, safeOffset + safeLimit);
   const items = await request<StoreReview[]>(`${storeApi}/products/reviews?product_id=${productId}&per_page=${safeLimit}&offset=${safeOffset}`);
   return (items ?? []).map((r) => ({ id: r.id, reviewer: r.reviewer, review: r.review, rating: r.rating, verified: !!r.verified, date_created: r.date_created }));
+}
+
+/**
+ * Productos complementarios de lo que hay en el carrito ("Te puede interesar").
+ * Con WooCommerce se tomarán de las "Ventas cruzadas" de cada producto (pendiente: la Store API
+ * no las expone por producto, se leerán con wc/v3 desde el servidor). Mientras tanto, sin tienda real, lista vacía.
+ */
+export async function getComplementaryProducts(ids: number[]): Promise<Product[]> {
+  const clean = ids.filter((id) => Number.isInteger(id) && id > 0).slice(0, 30);
+  if (!clean.length) return [];
+  if (isDemoCatalog) return sampleComplementsFor(clean).slice(0, 8);
+  return [];
 }
 
 /** Estilo de tarjeta/galería de un producto según su categoría. */

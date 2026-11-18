@@ -184,6 +184,7 @@ export const sampleProducts: Product[] = [
   sample({ id: 102, name: "Cargador 20W original Apple", price: 249, category: "iphone", rating: [4.8, 12], brand: "Apple" }),
   sample({ id: 103, name: "Cable USB-C a Lightning 1 m", price: 119, regular: 149, category: "iphone", rating: [4.5, 8], brand: "Apple" }),
   sample({ id: 104, name: "Funda de silicona iPhone 15", price: 149, category: "iphone", brand: "Silicona" }),
+  sample({ id: 106, name: "Vidrio templado iPhone 16 Pro Max", price: 75, category: "iphone", rating: [4.4, 6], brand: "Vidrio 9H" }),
   sample({ id: 201, name: "Protector TPU transparente Galaxy S24 Ultra", price: 225, regular: 250, category: "samsung", rating: [4.2, 5], brand: "TPU", freeShipping: true }),
   sample({ id: 202, name: "Cargador 25W original Samsung", price: 199, category: "samsung", rating: [4.7, 9], brand: "Samsung" }),
   sample({ id: 203, name: "Cable USB-C a USB-C 1 m", price: 79, category: "samsung", rating: [4.3, 4], brand: "Samsung" }),
@@ -201,4 +202,21 @@ export function sampleByCategory(slug: string) {
 
 export function sampleSections(sections: Array<{ title: string; slug: string; cardVariant: CardVariant }>): HomeSection[] {
   return sections.map((s) => ({ ...s, products: sampleByCategory(s.slug) }));
+}
+
+/**
+ * Productos complementarios de EJEMPLO ("Te puede interesar" en la orden de compra).
+ * Las variaciones usan el id del producto padre (protector 105x → 105, memoria 305x → 305).
+ */
+const sampleComplements: Record<number, number[]> = {
+  101: [106, 102], 102: [103, 105, 106], 103: [102, 106], 104: [106, 103], 105: [106, 102], 106: [105, 103],
+  201: [202, 203], 202: [203, 201], 203: [202], 204: [202, 203],
+  301: [302], 302: [303, 301], 303: [302], 304: [203], 305: [302, 301],
+};
+
+export function sampleComplementsFor(ids: number[]): Product[] {
+  const parent = (id: number) => (id > 1000 ? Math.floor(id / 10) : id);
+  const inCart = new Set(ids.map(parent));
+  const wanted = [...new Set(ids.flatMap((id) => sampleComplements[parent(id)] ?? []))].filter((id) => !inCart.has(id));
+  return wanted.map((id) => sampleProducts.find((p) => p.id === id)).filter((p): p is Product => !!p);
 }

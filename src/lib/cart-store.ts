@@ -33,4 +33,7 @@ export const cartStore = {
   remove(id: number) {
     store.write(store.read().filter((l) => l.id !== id));
   },
+  clear() {
+    store.write([]);
+  },
 };

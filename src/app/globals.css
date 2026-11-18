@@ -23,6 +23,8 @@
   --success:#15803d;         /* verde: compatible, compra verificada, envío gratis alcanzado */
   --danger:#b91c1c;          /* rojo: no compatible */
   --divider:#d9dce2;         /* líneas separadoras */
+  --pending:#cbd0d8;         /* pasos pendientes (orden de compra, estado del pedido) */
+  --strike:#9ca3af;          /* precios tachados */
 }
 @theme inline{
   --font-sans:var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -48,6 +50,8 @@
   --color-success:var(--success);
   --color-danger:var(--danger);
   --color-divider:var(--divider);
+  --color-pending:var(--pending);
+  --color-strike:var(--strike);
   --shadow-card:0 1px 2px rgb(16 24 40 / .04), 0 2px 8px rgb(16 24 40 / .04);
   --shadow-card-hover:0 4px 16px rgb(16 24 40 / .08);
 }

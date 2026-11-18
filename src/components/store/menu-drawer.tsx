@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronRight, LogOut } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useStore } from "@/components/store/store-provider";
+import { AccountLinks } from "@/components/account/account-links";
+import { accountStore } from "@/lib/account-store";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
-const accountItems = ["Mis compras", "Historial de pedidos", "Formas de pago guardadas", "Mis direcciones"];
 /* Línea gris de 1px con ~16px arriba y abajo: el margen negativo compensa el space-y-7 del nav. */
 const separatorClass = "-mt-3 mb-4 border-0 border-t border-border";
 const rowClass ="flex min-h-12 w-full items-center justify-between gap-3 rounded-xl px-3 text-left font-medium transition-colors hover:bg-surface";
@@ -16,11 +20,22 @@ function SectionTitle({ children }: { children: string }) {
 }
 
 export function MenuDrawer() {
-  const { panel, closePanel, openPanel, customer } = useStore();
+  const { panel, closePanel, openPanel, customer, notify } = useStore();
+  const router = useRouter();
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const close = () => closePanel("menu");
   const whatsapp = whatsappLink("Hola, necesito ayuda con un pedido.");
 
+  function logout() {
+    accountStore.logout();
+    setConfirmLogout(false);
+    close();
+    router.push("/");
+    notify("Cerraste sesión");
+  }
+
   return (
+    <>
     <Sheet open={panel === "menu"} onClose={close} title="Menú" side="left">
       <nav aria-label="Menú de la tienda" className="space-y-7">
         <section>
@@ -47,18 +62,25 @@ export function MenuDrawer() {
 
         <section>
           <SectionTitle>Mi cuenta</SectionTitle>
-          {!customer && <p className="mb-2 px-3 text-sm text-muted">Inicia sesión para ver tu información.</p>}
-          <ul>
-            {accountItems.map((label) => (
-              <li key={label}>
-                {/* Sin sesión, cada opción lleva al inicio de sesión. */}
-                <button type="button" onClick={() => openPanel("account")} className={rowClass}>
-                  {label}
-                  <ChevronRight aria-hidden className="size-4 text-muted" />
-                </button>
-              </li>
-            ))}
-          </ul>
+          {customer ? (
+            <div className="mb-2 px-3">
+              <p className="font-semibold">Hola, {customer.name}</p>
+              <p className="truncate text-xs text-muted">{customer.email}</p>
+            </div>
+          ) : (
+            <div className="mb-2 px-3">
+              <p className="text-sm text-muted">Inicia sesión para ver tu información.</p>
+              <button type="button" onClick={() => openPanel("account")} className="mt-2 inline-flex min-h-11 items-center rounded-lg border border-primary px-4 text-sm font-semibold text-primary-strong transition-colors hover:bg-primary-soft">
+                Iniciar sesión
+              </button>
+            </div>
+          )}
+          <AccountLinks onNavigate={close} />
+          {customer && (
+            <button type="button" onClick={() => setConfirmLogout(true)} className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-border px-4 text-sm font-semibold text-foreground/80 transition-colors hover:bg-surface">
+              <LogOut aria-hidden className="size-4" /> Cerrar sesión
+            </button>
+          )}
         </section>
 
         <hr className={separatorClass} />
@@ -92,5 +114,7 @@ export function MenuDrawer() {
         </section>
       </nav>
     </Sheet>
+    <ConfirmDialog open={confirmLogout} title="¿Quieres cerrar sesión?" confirmLabel="Cerrar sesión" onCancel={() => setConfirmLogout(false)} onConfirm={logout} />
+    </>
   );
 }

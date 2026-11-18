@@ -7,9 +7,11 @@ import { useStore } from "@/components/store/store-provider";
 import { Sheet } from "@/components/ui/sheet";
 import { Stars } from "@/components/stars";
 import { stripTags } from "@/lib/format";
+import { useAccount } from "@/lib/account-store";
 
 type Props = {
   productId: number;
+  slug: string;
   rating: { value: string; count: number; raw: number } | null;
   faqs: Array<{ q: string; a: string }>;
   initialReviews: ProductReview[];
@@ -24,13 +26,20 @@ function reviewDate(iso: string) {
 }
 
 /** 10. Calificaciones y preguntas. */
-export function ReviewsAndQuestions({ productId, rating, faqs, initialReviews }: Props) {
+export function ReviewsAndQuestions({ productId, slug, rating, faqs, initialReviews }: Props) {
   const { customer, openPanel } = useStore();
+  const account = useAccount();
   const [question, setQuestion] = useState("");
   const [reviews, setReviews] = useState(initialReviews);
   const [hasMore, setHasMore] = useState(initialReviews.length >= 2 && (rating?.count ?? 0) > initialReviews.length);
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState<{ src: string; alt: string } | null>(null);
+
+  // Opiniones del cliente en este dispositivo (compra verificada) antes de las de la tienda.
+  const mine: ProductReview[] = (account?.reviews ?? [])
+    .filter((r) => r.slug === slug)
+    .map((r, i) => ({ id: -(i + 1), reviewer: account?.customer.name ?? "Tú", review: r.comment, rating: r.rating, verified: true, date_created: r.date }));
+  const shown = [...mine, ...reviews];
 
   function askQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -110,9 +119,9 @@ export function ReviewsAndQuestions({ productId, rating, faqs, initialReviews }:
           <p className="mt-2 text-sm text-muted">Este producto aún no tiene opiniones.</p>
         )}
 
-        {reviews.length > 0 && (
+        {shown.length > 0 && (
           <ul className="mt-6 space-y-6">
-            {reviews.map((r) => {
+            {shown.map((r) => {
               const name = r.reviewer?.trim() || "Anónimo";
               return (
                 <li key={r.id} className="flex gap-3">

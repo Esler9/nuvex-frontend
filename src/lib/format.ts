@@ -26,3 +26,21 @@ export function formatDecimalMoney(value: string, currency = "GTQ") {
   const amount = Number(value);
   return value !== "" && Number.isFinite(amount) ? new Intl.NumberFormat("es-GT", { style: "currency", currency }).format(amount) : "—";
 }
+
+const tz = "America/Guatemala";
+
+/** Fecha corta en hora de Guatemala, p. ej. "18 nov 2026". */
+export function formatDate(iso: string) {
+  const parts = new Intl.DateTimeFormat("es-GT", { day: "numeric", month: "short", year: "numeric", timeZone: tz }).formatToParts(new Date(iso));
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("day")} ${get("month").replace(".", "")} ${get("year")}`;
+}
+
+/** Fecha y hora en hora de Guatemala, p. ej. "18 nov 2026, 15:20". */
+export function formatDateTime(iso: string) {
+  const time = new Intl.DateTimeFormat("es-GT", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: tz }).format(new Date(iso));
+  return `${formatDate(iso)}, ${time}`;
+}
+
+/** Montos de pedidos (siempre GTQ en centavos). */
+export const gtq = (cents: number) => formatMoney(cents, 2, "GTQ");

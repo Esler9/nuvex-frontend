@@ -1,17 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Smartphone, Trash2, Truck } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
 import { useStore } from "@/components/store/store-provider";
 import { formatMoney } from "@/lib/format";
-import { siteConfig, whatsappLink } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 
 export function CartDrawer() {
   const { panel, closePanel, lines, subtotal, count, setQuantity, removeItem } = useStore();
   const close = () => closePanel("cart");
-  const [method, setMethod] = useState<string>("");
   const minorUnit = lines[0]?.minorUnit ?? 2;
   const currency = lines[0]?.currency ?? "GTQ";
   const fmt = (value: number) => formatMoney(value, minorUnit, currency);
@@ -20,52 +18,16 @@ export function CartDrawer() {
   const remaining = Math.max(threshold - subtotal, 0);
   const progress = Math.min((subtotal / threshold) * 100, 100);
 
-  // Contra entrega solo si todos los productos del carrito lo permiten.
-  const methods = siteConfig.paymentMethods.filter((m) => m !== "Contra entrega" || lines.every((l) => l.cod !== false));
-  const payment = methods.includes(method as (typeof methods)[number]) ? method : "";
-
-  const orderText = [
-    "Hola, quiero hacer este pedido:",
-    ...lines.map((l) => `• ${l.quantity} × ${l.name} (${fmt(l.unitPrice * l.quantity)})`),
-    `Subtotal: ${fmt(subtotal)}`,
-    `Forma de pago: ${payment}`,
-  ].join("\n");
-  const checkoutHref = payment ? whatsappLink(orderText) : null;
-
   const footer = lines.length ? (
     <div className="space-y-4">
-      <fieldset>
-        <legend className="text-sm font-semibold">Forma de pago</legend>
-        <div className="mt-2 grid grid-cols-3 gap-2">
-          {methods.map((m) => (
-            <label key={m} className={`flex min-h-11 cursor-pointer items-center justify-center rounded-lg border px-2 text-center text-xs font-semibold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary ${payment === m ? "border-primary bg-primary-soft text-primary-strong" : "border-border text-foreground"}`}>
-              <input type="radio" name="payment-method" value={m} checked={payment === m} onChange={() => setMethod(m)} className="sr-only" />
-              {m}
-            </label>
-          ))}
-        </div>
-      </fieldset>
       <div className="flex items-center justify-between text-base">
         <span className="text-muted">Subtotal</span>
         <span className="text-lg font-bold">{fmt(subtotal)}</span>
       </div>
-      {checkoutHref ? (
-        <a href={checkoutHref} target="_blank" rel="noopener noreferrer" className="flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-6 font-bold text-accent-foreground transition-colors hover:bg-accent-strong">
-          Proceder al pago
-        </a>
-      ) : (
-        <button type="button" disabled className="flex min-h-12 w-full cursor-not-allowed items-center justify-center rounded-lg bg-accent/50 px-6 font-bold text-accent-foreground/70">
-          Proceder al pago
-        </button>
-      )}
-      <p className="text-center text-xs text-muted">
-        {!payment
-          ? "Elige una forma de pago para continuar."
-          : checkoutHref
-            ? "Confirmamos tu pedido, envío y pago por WhatsApp."
-            : "El pedido por WhatsApp aún no está configurado."}{" "}
-        Precios y existencias se confirman al finalizar.
-      </p>
+      <Link href="/orden-de-compra" onClick={close} className="flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-6 font-bold text-accent-foreground transition-colors hover:bg-accent-strong">
+        Proceder al pago
+      </Link>
+      <p className="text-center text-xs text-muted">Paga con depósito o transferencia bancaria. Precios y existencias se confirman al finalizar.</p>
     </div>
   ) : undefined;
 
@@ -110,6 +72,7 @@ export function CartDrawer() {
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
                   <p className="line-clamp-2 text-sm font-semibold">{line.name}</p>
+                  {line.detail && <p className="text-xs text-muted">{line.detail}</p>}
                   <p className="mt-0.5 text-sm text-muted">{fmt(line.unitPrice)} c/u</p>
                   <div className="mt-auto flex items-center justify-between pt-2">
                     <div className="flex items-center rounded-full border border-border" role="group" aria-label={`Cantidad de ${line.name}`}>
