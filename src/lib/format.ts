@@ -20,3 +20,9 @@ export function stripTags(html: string) {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+/** Formatea un precio decimal en texto, como lo devuelve la API wc/v3 ("149.99"). */
+export function formatDecimalMoney(value: string, currency = "GTQ") {
+  const amount = Number(value);
+  return value !== "" && Number.isFinite(amount) ? new Intl.NumberFormat("es-GT", { style: "currency", currency }).format(amount) : "—";
+}
