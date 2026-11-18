@@ -71,16 +71,6 @@ export function cashOnDeliveryAvailable(p: Product) {
   return !hasTag(p, siteConfig.productTags.noCashOnDelivery);
 }
 
-/** Modelos compatibles (atributo "Compatibilidad"). null = el producto no usa verificador. */
-export function compatibleModels(p: Product) {
-  const attr = attribute(p, /compatib/i);
-  return attr?.terms.length ? attr.terms.map((t) => t.name) : null;
-}
-
-export function isCompatible(p: Product, model: string) {
-  const models = compatibleModels(p);
-  return !!models?.some((m) => m.trim().toLowerCase() === model.trim().toLowerCase());
-}
 
 /** Estado de existencia a partir de los datos de WooCommerce (nunca se inventa la cantidad). */
 export function stockInfo(p: Product): { inStock: boolean; label: string; tone: "ok" | "low" | "out" } {

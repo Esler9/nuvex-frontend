@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CardVariant, Product } from "@/types/content";
 import { ProductCard } from "@/components/product-card";
-import { modelStore } from "@/lib/browsing-store";
-import { isCompatible } from "@/lib/product-meta";
 
 type Item = { product: Product; variant: CardVariant };
 type Cursor = { phase: "cat" | "all"; page: number };
@@ -26,12 +24,9 @@ export function SuggestedProducts({ productId, category }: { productId: number; 
       const res = await fetch(`/api/suggested?${qs}`);
       if (!res.ok) throw new Error();
       const data = (await res.json()) as { items: Item[]; next: Cursor | null };
-      // Con un modelo elegido, los compatibles van primero dentro de cada tanda.
-      const model = modelStore.current();
-      const batch = model ? [...data.items].sort((a, b) => Number(isCompatible(b.product, model.model)) - Number(isCompatible(a.product, model.model))) : data.items;
       setItems((prev) => {
         const seen = new Set(prev.map((i) => i.product.id));
-        return [...prev, ...batch.filter((i) => !seen.has(i.product.id))];
+        return [...prev, ...data.items.filter((i) => !seen.has(i.product.id))];
       });
       setNext(data.next);
     } catch {

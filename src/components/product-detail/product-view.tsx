@@ -11,10 +11,9 @@ import { Stars } from "@/components/stars";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { MediaGallery } from "@/components/product-detail/media-gallery";
 import { ShareButton } from "@/components/product-detail/share-button";
-import { CompatibilityChecker } from "@/components/product-detail/compatibility-checker";
 import { OptionPicker } from "@/components/product-detail/option-picker";
 import { formatMoney, money } from "@/lib/format";
-import { brandName, cashOnDeliveryAvailable, compatibleModels, priceInCents, ratingInfo, regularPriceLabel, stockInfo } from "@/lib/product-meta";
+import { brandName, cashOnDeliveryAvailable, priceInCents, ratingInfo, regularPriceLabel, stockInfo } from "@/lib/product-meta";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
 type Props = {
@@ -60,7 +59,6 @@ export function ProductView({ product, options, style, video, delivery, children
   const before = regularPriceLabel(view);
   const rating = ratingInfo(product);
   const brand = brandName(product);
-  const compatible = compatibleModels(product);
   const cod = cashOnDeliveryAvailable(product);
   const white = style === 1;
   const skuText = sku ? ` (SKU ${sku})` : "";
@@ -97,9 +95,9 @@ export function ProductView({ product, options, style, video, delivery, children
 
   return (
     <>
-      {/* 1–4: encabezado, galería, compatibilidad y opciones */}
+      {/* 1–3: encabezado, galería y opciones */}
       <div className={white ? "rounded-b-2xl bg-card pb-6 shadow-card" : ""}>
-        <div className="container-shell grid gap-5 pt-4 lg:grid-cols-2 lg:grid-rows-[auto_auto_1fr] lg:gap-x-10 lg:pt-8">
+        <div className="container-shell grid gap-5 pt-4 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-10 lg:pt-8">
           <div className="lg:col-start-2 lg:row-start-1">
             {brand && (
               <p className="text-sm text-muted">
@@ -128,7 +126,7 @@ export function ProductView({ product, options, style, video, delivery, children
             </div>
           </div>
 
-          <div className="lg:col-start-1 lg:row-span-3 lg:row-start-1">
+          <div className="lg:col-start-1 lg:row-span-2 lg:row-start-1">
             <MediaGallery
               key={selectedId ?? "base"}
               images={view.images ?? []}
@@ -144,14 +142,8 @@ export function ProductView({ product, options, style, video, delivery, children
             />
           </div>
 
-          {compatible && (
-            <div className="lg:col-start-2 lg:row-start-2">
-              <CompatibilityChecker compatible={compatible} />
-            </div>
-          )}
-
           {options && selectedId !== null && (
-            <div className={`lg:col-start-2 ${compatible ? "lg:row-start-3" : "lg:row-start-2"}`}>
+            <div className="lg:col-start-2 lg:row-start-2">
               <OptionPicker options={options} selectedId={selectedId} onSelect={setSelectedId} />
             </div>
           )}

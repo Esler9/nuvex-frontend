@@ -52,13 +52,6 @@ export const siteConfig = {
     timeZone: "America/Guatemala",
   },
   paymentMethods: ["Transferencia", "Depósito", "Contra entrega"] as const,
-  /** Marcas y modelos del verificador de compatibilidad. */
-  phoneModels: {
-    Apple: ["iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16", "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14", "iPhone 13 Pro Max", "iPhone 13", "iPhone 12", "iPhone 11"],
-    Samsung: ["Galaxy S24 Ultra", "Galaxy S24+", "Galaxy S24", "Galaxy S23 Ultra", "Galaxy S23", "Galaxy A55", "Galaxy A54", "Galaxy A35", "Galaxy A25", "Galaxy A15"],
-    Xiaomi: ["Redmi Note 13 Pro", "Redmi Note 13", "Redmi 13C", "Poco X6 Pro"],
-    Motorola: ["Moto G84", "Moto G54", "Moto E13"],
-  } as Record<string, string[]>,
   /**
    * Sección "Descubre más" (círculos debajo de las categorías). El slug debe existir
    * en WooCommerce; la foto del círculo es la imagen de la categoría en WooCommerce.
