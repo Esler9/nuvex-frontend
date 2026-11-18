@@ -67,10 +67,6 @@ export function hasFastShipping(p: Product) {
   return siteConfig.fastShipping.enabled && p.is_in_stock !== false;
 }
 
-export function cashOnDeliveryAvailable(p: Product) {
-  return !hasTag(p, siteConfig.productTags.noCashOnDelivery);
-}
-
 
 /** Estado de existencia a partir de los datos de WooCommerce (nunca se inventa la cantidad). */
 export function stockInfo(p: Product): { inStock: boolean; label: string; tone: "ok" | "low" | "out" } {

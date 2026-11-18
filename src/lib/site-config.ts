@@ -40,10 +40,9 @@ export const siteConfig = {
   freeShippingTag: "envio-gratis",
   /**
    * Etiquetas de producto (Productos → Etiquetas en WooCommerce) que controlan la página de detalle:
-   * original → insignia "Original [marca]"; generico → "Genérico de calidad";
-   * sin-contra-entrega → oculta el pago contra entrega para ese producto.
+   * original → insignia "Original [marca]"; generico → "Genérico de calidad".
    */
-  productTags: { original: "original", generic: "generico", noCashOnDelivery: "sin-contra-entrega" },
+  productTags: { original: "original", generic: "generico" },
   shipping: {
     carrier: "Cargo Expreso",
     /** Días hábiles (sin domingos) para la fecha estimada de entrega. */
@@ -51,7 +50,36 @@ export const siteConfig = {
     maxDays: 3,
     timeZone: "America/Guatemala",
   },
-  paymentMethods: ["Transferencia", "Depósito", "Contra entrega"] as const,
+  /**
+   * Orden de compra. Montos en centavos. Estos valores pasarán al panel cuando exista el backend;
+   * mientras tanto se editan aquí. Las cuentas bancarias son de EJEMPLO: reemplázalas antes de publicar.
+   */
+  checkout: {
+    /** Costo de envío cuando el subtotal no alcanza freeShippingThreshold. Valor de ejemplo. */
+    shippingCost: 3500,
+    bankAccounts: [
+      { bank: "Banrural", type: "Monetaria", number: "0000000000", holder: "NUVEX (titular de ejemplo)" },
+    ],
+    /** Bancos para "¿Dónde hiciste el pago?". */
+    banks: ["Banrural", "Banco Industrial", "BAM", "G&T Continental", "BAC Credomatic", "Banco Promerica", "Bantrab", "Banco Internacional", "Ficohsa", "CHN", "Otro"],
+    receiptMaxBytes: 5 * 1024 * 1024,
+    receiptTypes: ["image/jpeg", "image/png", "application/pdf"],
+    /** Rastreo de Cargo Expreso. Si incluye {guia} se reemplaza por el número de guía. */
+    trackingUrl: "https://www.cargoexpreso.com/",
+  },
+  /** Programa Puntos NUVEX (valores de ejemplo; pasarán al panel). */
+  points: {
+    enabled: true,
+    /** Puntos que se ganan por cada `perAmount` centavos pagados. */
+    earn: { points: 1, perAmount: 1000 },
+    perReview: 20,
+    /** Valor de un punto en centavos (100 pts = Q10.00). */
+    pointValue: 10,
+    minRedeem: 100,
+    redeemBlocks: [100, 200, 500],
+    couponDays: 30,
+    minReviewChars: 20,
+  },
   /**
    * Sección "Descubre más" (círculos debajo de las categorías). El slug debe existir
    * en WooCommerce; la foto del círculo es la imagen de la categoría en WooCommerce.

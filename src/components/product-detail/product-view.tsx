@@ -13,7 +13,7 @@ import { MediaGallery } from "@/components/product-detail/media-gallery";
 import { ShareButton } from "@/components/product-detail/share-button";
 import { OptionPicker } from "@/components/product-detail/option-picker";
 import { formatMoney, money } from "@/lib/format";
-import { brandName, cashOnDeliveryAvailable, priceInCents, ratingInfo, regularPriceLabel, stockInfo } from "@/lib/product-meta";
+import { brandName, priceInCents, ratingInfo, regularPriceLabel, stockInfo } from "@/lib/product-meta";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
 type Props = {
@@ -59,7 +59,6 @@ export function ProductView({ product, options, style, video, delivery, children
   const before = regularPriceLabel(view);
   const rating = ratingInfo(product);
   const brand = brandName(product);
-  const cod = cashOnDeliveryAvailable(product);
   const white = style === 1;
   const skuText = sku ? ` (SKU ${sku})` : "";
   const whatsappHref = whatsappLink(`Hola, me interesa el producto ${displayName}${skuText}`);
@@ -210,12 +209,7 @@ export function ProductView({ product, options, style, video, delivery, children
           </h2>
           <div className="flex gap-3 text-sm">
             <Landmark aria-hidden className="mt-0.5 size-6 shrink-0 text-primary" />
-            <p>
-              {cod
-                ? `Paga tu producto por medio de transferencia, depósito o contra entrega con ${siteConfig.shipping.carrier}.`
-                : "Paga tu producto por medio de transferencia o depósito."}{" "}
-              Pronto habrá más formas de pago.
-            </p>
+            <p>Paga tu producto por medio de transferencia o depósito. Pronto habrá más formas de pago.</p>
           </div>
         </section>
       </div>

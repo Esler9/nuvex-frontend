@@ -36,15 +36,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addItem = useCallback((product: Product) => {
     if (!product.prices || product.is_in_stock === false || product.is_purchasable === false) return false;
+    // La página de detalle envía "Nombre · Opción"; la opción se muestra aparte en el carrito.
+    const [name, ...detail] = product.name.split(" · ");
     cartStore.add({
       id: product.id,
-      name: product.name,
+      name,
+      detail: detail.join(" · ") || undefined,
       slug: product.slug,
       unitPrice: Number(product.prices.price),
       minorUnit: product.prices.currency_minor_unit,
       currency: product.prices.currency_code || "GTQ",
       image: product.images?.[0]?.src,
-      cod: cashOnDeliveryAvailable(product),
     });
     return true;
   }, []);

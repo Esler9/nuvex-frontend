@@ -111,8 +111,8 @@ export type CartLine = {
   currency: string;
   image?: string;
   quantity: number;
-  /** false si el producto no admite pago contra entrega. */
-  cod?: boolean;
+  /** Opción elegida (color, capacidad...). */
+  detail?: string;
 };
 
 export type HeroSlide = {
