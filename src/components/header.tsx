@@ -5,8 +5,10 @@ import { AccountButton, CartButton, FavoritesButton, MenuButton } from "@/compon
 
 export function AnnouncementBar() {
   return (
-    <div className="bg-accent-soft px-4 py-2 text-center text-xs font-semibold text-accent-text sm:text-sm">
-      {siteConfig.announcement}
+    <div className="overflow-hidden text-ellipsis whitespace-nowrap bg-accent-soft px-4 py-2 text-center text-xs font-semibold text-accent-text sm:text-sm">
+      {/* Siempre en una línea: debajo de 420px se usa la versión corta. */}
+      <span className="hidden min-[420px]:inline">{siteConfig.announcement.full}</span>
+      <span className="min-[420px]:hidden">{siteConfig.announcement.short}</span>
     </div>
   );
 }

@@ -6,7 +6,8 @@ import type { CardVariant, DiscoverCategory, HeroSlide } from "@/types/content";
  */
 export const siteConfig = {
   name: process.env.NEXT_PUBLIC_STORE_NAME || "Nuvex",
-  announcement: "Envíos a todo el país · Envío gratis a partir de Q350",
+  /** Barra superior. `short` se muestra en pantallas muy angostas para que quepa en una sola línea. */
+  announcement: { full: "Tienda en preparación · Muy pronto podrás comprar en línea", short: "Tienda en preparación · Muy pronto" },
   /** Monto para envío gratis en centavos (Q350.00). Debe coincidir con la regla de envío en WooCommerce. */
   freeShippingThreshold: 35000,
   /** Solo dígitos con código de país, p. ej. 50212345678. */
