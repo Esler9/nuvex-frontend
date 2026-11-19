@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageTransition } from "@/components/page-transition";
 import { getDiscoverCategories, getHomeSections, isDemoCatalog } from "@/lib/api";
 import { DiscoverCategories } from "@/components/discover-categories";
 import { siteConfig } from "@/lib/site-config";
@@ -10,7 +11,7 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 export default async function HomePage() {
   const [sections, discover] = await Promise.all([getHomeSections(), getDiscoverCategories()]);
   return (
-    <>
+    <PageTransition>
       <h1 className="sr-only">{siteConfig.name}: accesorios para celulares en Guatemala</h1>
       <HeroCarousel slides={siteConfig.slides} />
 
@@ -32,6 +33,6 @@ export default async function HomePage() {
           <DiscoverCategories title={siteConfig.discover.title} subtitle={siteConfig.discover.subtitle} categories={discover} />
         </div>
       </section>
-    </>
+    </PageTransition>
   );
 }

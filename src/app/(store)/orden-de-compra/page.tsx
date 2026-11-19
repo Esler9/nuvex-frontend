@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageTransition } from "@/components/page-transition";
 import { CheckoutFlow } from "@/components/checkout/checkout-flow";
 
 export const metadata: Metadata = {
@@ -10,13 +11,13 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage() {
   return (
-    <>
+    <PageTransition>
       <div className="border-b border-border bg-card">
         <div className="container-shell py-4">
           <h1 className="text-xl font-bold sm:text-2xl">Orden de compra</h1>
         </div>
       </div>
       <CheckoutFlow />
-    </>
+    </PageTransition>
   );
 }

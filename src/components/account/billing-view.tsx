@@ -10,9 +10,10 @@ import { TextField } from "@/components/ui/field";
 import { Sheet } from "@/components/ui/sheet";
 import { ui } from "@/components/ui/styles";
 import { accountStore } from "@/lib/account-store";
-import { invoiceLabel, isValidNit } from "@/lib/checkout";
+import { dpiError, invoiceLabel, nitError, normalizeNit } from "@/lib/checkout";
+import { MaskedDpi } from "@/components/account/masked-dpi";
 
-type Draft = { id?: string; name: string; dpi: string; needsNit: boolean; nit: string; nitName: string };
+type Draft = { id?: string; name: string; dpi: string; needsNit: boolean; nit: string };
 
 export function BillingView({ account }: { account: AccountData }) {
   const { notify } = useStore();
@@ -31,12 +32,14 @@ export function BillingView({ account }: { account: AccountData }) {
                 <FileText aria-hidden className="mt-0.5 size-5 shrink-0 text-primary-strong" />
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">{b.name}</p>
-                  <p className="text-muted">DPI {b.dpi.replace(/(\d{4})(\d{5})(\d{4})/, "$1 $2 $3")}</p>
+                  <p className="text-muted">
+                    <MaskedDpi dpi={b.dpi} />
+                  </p>
                   <p className="text-muted">{invoiceLabel(b)}</p>
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
-                <button type="button" onClick={() => setEditing({ id: b.id, name: b.name, dpi: b.dpi, needsNit: !!b.nit, nit: b.nit ?? "", nitName: b.nitName ?? "" })} className={ui.btnGhost}>
+                <button type="button" onClick={() => setEditing({ id: b.id, name: b.name, dpi: b.dpi, needsNit: !!b.nit, nit: b.nit ?? "" })} className={ui.btnGhost}>
                   <Pencil aria-hidden className="size-4" /> Editar
                 </button>
                 <button type="button" onClick={() => setToDelete(b)} className={`${ui.btnGhost} hover:text-danger`}>
@@ -47,7 +50,7 @@ export function BillingView({ account }: { account: AccountData }) {
           ))}
         </ul>
       )}
-      <button type="button" onClick={() => setEditing({ name: account.customer.name, dpi: "", needsNit: false, nit: "", nitName: "" })} className={`${ui.btnOutline} w-full`}>
+      <button type="button" onClick={() => setEditing({ name: [account.customer.firstName, account.customer.lastName].filter(Boolean).join(" ") || account.customer.name, dpi: account.customer.dpi ?? "", needsNit: false, nit: "" })} className={`${ui.btnOutline} w-full`}>
         <Plus aria-hidden className="size-4" /> Agregar datos de facturación
       </button>
 
@@ -57,7 +60,7 @@ export function BillingView({ account }: { account: AccountData }) {
             key={editing.id ?? "new"}
             initial={editing}
             onSave={(d) => {
-              accountStore.saveBilling({ id: d.id, name: d.name.trim(), dpi: d.dpi.replace(/\D/g, ""), ...(d.needsNit ? { nit: d.nit.replace(/[\s-]/g, "").toUpperCase(), nitName: d.nitName.trim() } : {}) });
+              accountStore.saveBilling({ id: d.id, name: d.name.trim(), dpi: d.dpi.replace(/\D/g, ""), ...(d.needsNit ? { nit: normalizeNit(d.nit) } : {}) });
               setEditing(null);
               notify("Datos de facturación guardados");
             }}
@@ -88,10 +91,11 @@ function BillingForm({ initial, onSave }: { initial: Draft; onSave: (d: Draft) =
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const found: Partial<Record<keyof Draft, string>> = {};
-    if (d.name.trim().length < 3) found.name = "Escribe tu nombre completo.";
-    if (d.dpi.replace(/\D/g, "").length !== 13) found.dpi = "El DPI debe tener 13 dígitos.";
-    if (d.needsNit && !isValidNit(d.nit)) found.nit = "Revisa el NIT; no es válido.";
-    if (d.needsNit && d.nitName.trim().length < 3) found.nitName = "Escribe el nombre para la factura.";
+    if (d.name.trim().length < 3) found.name = "Escribe el nombre para la factura.";
+    const dpi = dpiError(d.dpi);
+    if (dpi) found.dpi = dpi;
+    const nit = d.needsNit ? nitError(d.nit) : null;
+    if (nit) found.nit = nit;
     setErrors(found);
     const first = Object.keys(found)[0];
     if (first) return e.currentTarget.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
@@ -100,8 +104,8 @@ function BillingForm({ initial, onSave }: { initial: Draft; onSave: (d: Draft) =
 
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
-      <TextField id="bi-name" name="name" label="Nombre completo" value={d.name} onChange={(e) => set({ name: e.target.value })} error={errors.name} maxLength={100} />
-      <TextField id="bi-dpi" name="dpi" label="Número de DPI" inputMode="numeric" placeholder="13 dígitos" value={d.dpi} onChange={(e) => set({ dpi: e.target.value.replace(/[^\d\s]/g, "") })} error={errors.dpi} maxLength={15} />
+      <TextField id="bi-name" name="name" label="Nombre para la factura" value={d.name} onChange={(e) => set({ name: e.target.value })} error={errors.name} maxLength={120} />
+      <TextField id="bi-dpi" name="dpi" label="Número de DPI" inputMode="numeric" autoComplete="off" placeholder="13 dígitos" value={d.dpi} onChange={(e) => set({ dpi: e.target.value.replace(/[^\d\s]/g, "") })} error={errors.dpi} maxLength={16} />
       <fieldset>
         <legend className="text-sm font-medium">¿Factura con NIT?</legend>
         <div className="mt-2 grid grid-cols-2 gap-2">
@@ -114,10 +118,7 @@ function BillingForm({ initial, onSave }: { initial: Draft; onSave: (d: Draft) =
         </div>
       </fieldset>
       {d.needsNit && (
-        <>
-          <TextField id="bi-nit" name="nit" label="NIT" placeholder="Ej. 1234567-9" value={d.nit} onChange={(e) => set({ nit: e.target.value })} error={errors.nit} maxLength={15} />
-          <TextField id="bi-nitname" name="nitName" label="Nombre para la factura" value={d.nitName} onChange={(e) => set({ nitName: e.target.value })} error={errors.nitName} maxLength={120} />
-        </>
+        <TextField id="bi-nit" name="nit" label="NIT" placeholder="Ej. 1234567-9" value={d.nit} onChange={(e) => set({ nit: e.target.value.replace(/[^\dkK-]/g, "") })} error={errors.nit} maxLength={15} />
       )}
       <button type="submit" className={`${ui.btnPrimary} w-full`}>
         Guardar

@@ -28,7 +28,9 @@ export function AccountLinks({ onNavigate }: { onNavigate?: () => void }) {
       {visible.map(({ href, label, Icon, ...rest }) => {
         const content = (
           <>
-            <Icon aria-hidden className="size-5 shrink-0 text-muted" strokeWidth={1.75} />
+            <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+              <Icon className="size-4" strokeWidth={1.75} />
+            </span>
             <span className="flex-1">{label}</span>
             {"points" in rest && customer && <span className="text-sm font-semibold text-primary-strong">{pointsBalance(account)} pts</span>}
             <ChevronRight aria-hidden className="size-4 text-muted" />

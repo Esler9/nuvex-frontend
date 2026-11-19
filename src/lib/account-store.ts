@@ -1,9 +1,9 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { AccountData, BillingData, Coupon, Customer, MyReview, Order, OrderLine, PaymentData, SavedAddress, SavedBilling, ShippingData } from "@/types/account";
+import type { AccountData, BillingData, Coupon, Customer, MyReview, Order, OrderLine, PaymentData, SavedAddress, SavedBilling } from "@/types/account";
 import { demoAccount, demoForeignCoupons } from "@/lib/account-demo";
-import { couponState, newCouponCode, newOrderNumber, normalizeCouponCode, orderTotals } from "@/lib/checkout";
+import { couponState, newCouponCode, normalizeCouponCode, pointsForPurchase } from "@/lib/checkout";
 import { siteConfig } from "@/lib/site-config";
 
 /**
@@ -89,22 +89,46 @@ export function checkCoupon(raw: string, account: AccountData | null | undefined
   return { ok: false, error: "Este cupón no existe" };
 }
 
-export type OrderDraft = {
-  lines: OrderLine[];
-  coupon?: Coupon;
-  email: string;
-  shippingData: ShippingData;
-  billing: BillingData;
-  payment: PaymentData;
-  save?: { label: string };
-};
+/** Datos que se guardan en la cuenta para reutilizarlos en próximas compras. */
+export type SaveForNextTime = { label: string; profile: Partial<Customer> };
 
 export const accountStore = {
+  /** Iniciar sesión (demostración): abre una cuenta de ejemplo con compras de muestra. */
   login(customer: Customer) {
     write(demoAccount(customer));
   },
+  /** Crear cuenta: empieza vacía; sus compras como invitado se unen al sincronizar por correo. */
+  register(customer: Customer) {
+    const current = read();
+    if (current && current.customer.email === customer.email) return;
+    write({ customer, addresses: [], billing: [], orders: [], coupons: [], points: [], reviews: [] });
+  },
   logout() {
     write(null);
+  },
+  updateProfile(patch: Partial<Customer>) {
+    update((a) => ({ ...a, customer: { ...a.customer, ...Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined && v !== "")) } }));
+  },
+
+  /**
+   * Une las compras guardadas en la tienda con ese correo (invitado, manuales) y suma los
+   * Puntos NUVEX de las entregadas que aún no se habían acreditado.
+   */
+  syncServerOrders(orders: Order[]) {
+    if (!orders.length) return;
+    update((a) => {
+      const byId = new Map(a.orders.map((o) => [o.id, o]));
+      for (const o of orders) byId.set(o.id, { ...byId.get(o.id), ...o });
+      const merged = [...byId.values()].sort((x, y) => y.createdAt.localeCompare(x.createdAt));
+      const credited = new Set(a.points.map((p) => p.reason));
+      const earned = siteConfig.points.enabled
+        ? orders
+            .filter((o) => o.status === "entregado" && !credited.has(`Compra #${o.id} entregada`))
+            .map((o) => ({ id: id("p"), date: o.history.entregado ?? nowIso(), reason: `Compra #${o.id} entregada`, points: pointsForPurchase(o.total) }))
+            .filter((p) => p.points > 0)
+        : [];
+      return { ...a, orders: merged, points: earned.length ? [...a.points, ...earned] : a.points };
+    });
   },
 
   saveAddress(address: Omit<SavedAddress, "id" | "primary"> & { id?: string; primary?: boolean }) {
@@ -140,54 +164,35 @@ export const accountStore = {
   },
 
   /**
-   * Crea el pedido en estado "Esperando confirmación". En modo demostración se guarda solo en
-   * este dispositivo; el correo, el apartado de inventario y la verificación los hará el backend.
+   * Registra en este dispositivo el pedido que la tienda ya guardó. Con cuenta, marca el cupón
+   * como usado y (si el cliente lo pidió) guarda dirección, facturación y perfil para la próxima vez.
    */
-  placeOrder(draft: OrderDraft, account: AccountData | null): Order {
-    const subtotal = draft.lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0);
-    const t = orderTotals(subtotal, draft.coupon?.value ?? 0);
-    const created = nowIso();
-    const order: Order = {
-      id: newOrderNumber(),
-      createdAt: created,
-      status: "esperando",
-      history: { esperando: created },
-      lines: draft.lines,
-      subtotal: t.subtotal,
-      shipping: t.shipping,
-      discount: t.discount,
-      coupon: t.discount > 0 ? draft.coupon?.code : undefined,
-      total: t.total,
-      email: draft.email,
-      shippingData: draft.shippingData,
-      payment: draft.payment,
-      billing: draft.billing,
-      demo: true,
-    };
-    if (account) {
-      update((a) => {
-        let next: AccountData = {
-          ...a,
-          orders: [order, ...a.orders],
-          coupons: a.coupons.map((c) => (order.coupon && c.code === order.coupon ? { ...c, usedAt: created, usedInOrder: order.id } : c)),
-        };
-        if (draft.save) {
-          const label = draft.save.label.trim() || "Mi dirección";
-          const sameAddress = a.addresses.find((x) => x.label.toLowerCase() === label.toLowerCase());
-          const saved: SavedAddress = { ...draft.shippingData, id: sameAddress?.id ?? id("addr"), label, email: draft.email, primary: sameAddress?.primary ?? a.addresses.length === 0 };
-          const sameBilling = a.billing.find((b) => b.dpi === draft.billing.dpi && (b.nit ?? "") === (draft.billing.nit ?? ""));
-          next = {
-            ...next,
-            addresses: sameAddress ? a.addresses.map((x) => (x.id === saved.id ? saved : x)) : [...a.addresses, saved],
-            billing: sameBilling ? a.billing : [...a.billing, { ...draft.billing, id: id("bill") }],
-          };
-        }
-        return next;
-      });
-    } else {
+  recordOrder(order: Order, save?: SaveForNextTime) {
+    if (!read()) {
       guestOrders.push(order);
+      return;
     }
-    return order;
+    update((acc) => {
+      let next: AccountData = {
+        ...acc,
+        orders: [order, ...acc.orders.filter((o) => o.id !== order.id)],
+        coupons: acc.coupons.map((c) => (order.coupon && c.code === order.coupon ? { ...c, usedAt: order.createdAt, usedInOrder: order.id } : c)),
+      };
+      if (save) {
+        const label = save.label.trim() || "Mi dirección";
+        const sameAddress = acc.addresses.find((x) => x.label.toLowerCase() === label.toLowerCase());
+        const saved: SavedAddress = { ...order.shippingData, id: sameAddress?.id ?? id("addr"), label, email: order.email, primary: sameAddress?.primary ?? acc.addresses.length === 0 };
+        const billing: BillingData = { name: order.billing.name, dpi: save.profile.dpi ?? order.billing.dpi, ...(order.billing.nit ? { nit: order.billing.nit } : {}) };
+        const sameBilling = acc.billing.find((b) => b.dpi === billing.dpi && (b.nit ?? "") === (billing.nit ?? ""));
+        next = {
+          ...next,
+          customer: { ...acc.customer, ...Object.fromEntries(Object.entries(save.profile).filter(([, v]) => v)) },
+          addresses: sameAddress ? acc.addresses.map((x) => (x.id === saved.id ? saved : x)) : [...acc.addresses, saved],
+          billing: sameBilling ? acc.billing.map((b) => (b.id === sameBilling.id ? { ...b, ...billing } : b)) : [...acc.billing, { ...billing, id: id("bill") }],
+        };
+      }
+      return next;
+    });
   },
 
   /** Reemplaza el comprobante de un pedido rechazado y lo vuelve a poner en verificación. */

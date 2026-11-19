@@ -58,6 +58,8 @@ export const siteConfig = {
   checkout: {
     /** Costo de envío cuando el subtotal no alcanza freeShippingThreshold. Valor de ejemplo. */
     shippingCost: 3500,
+    /** Valor inicial del límite para Consumidor Final (Q2,500.00). Se cambia en /admin/ajustes. */
+    cfLimit: 250000,
     bankAccounts: [
       { bank: "Banrural", type: "Monetaria", number: "0000000000", holder: "NUVEX (titular de ejemplo)" },
     ],

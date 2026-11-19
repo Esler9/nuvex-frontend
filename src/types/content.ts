@@ -113,6 +113,10 @@ export type CartLine = {
   quantity: number;
   /** Opción elegida (color, capacidad...). */
   detail?: string;
+  /** Producto padre cuando la línea es una variación (para promociones por producto). */
+  productId?: number;
+  /** Slugs de categoría (para promociones por categoría). */
+  categories?: string[];
 };
 
 export type HeroSlide = {

@@ -5,7 +5,8 @@
  * Todos los montos van en centavos (unidades menores de GTQ).
  */
 
-export type Customer = { name: string; email: string };
+/** Perfil del cliente. Con cuenta se reutiliza en las próximas compras. */
+export type Customer = { name: string; email: string; firstName?: string; lastName?: string; phone?: string; dpi?: string };
 
 export type OrderStatus =
   | "esperando" // Esperando confirmación de depósito
@@ -31,11 +32,14 @@ export type ShippingData = {
 
 export type SavedAddress = ShippingData & { id: string; label: string; email: string; primary: boolean };
 
-/** Datos de facturación. Sin NIT se factura a "Consumidor Final (CF)". */
-export type BillingData = { name: string; dpi: string; nit?: string; nitName?: string };
+/** Datos de facturación. Sin NIT se factura a "Consumidor Final (CF)". `name` es el nombre para la factura. */
+export type BillingData = { name: string; dpi: string; nit?: string };
 export type SavedBilling = BillingData & { id: string };
 
-export type PaymentMethod = "deposito" | "transferencia";
+export type PaymentMethod = "deposito" | "transferencia" | "efectivo" | "tarjeta";
+
+/** Por dónde entró el pedido. Los manuales se crean desde el panel. */
+export type OrderOrigin = "web" | "whatsapp" | "tienda" | "telefono";
 export type PaymentData = { method: PaymentMethod; bank: string; reference: string; date: string; receiptName?: string };
 
 export type OrderLine = { productId: number; slug: string; name: string; detail?: string; image?: string; unitPrice: number; quantity: number };
@@ -52,8 +56,16 @@ export type Order = {
   shipping: number;
   discount: number;
   coupon?: string;
+  /** Descuento de una promoción de la tienda (aparte del cupón). */
+  promoDiscount?: number;
+  promoLabel?: string;
   total: number;
   email: string;
+  /** Copia de nombres y apellidos tal como estaban al comprar. */
+  customer?: { firstName: string; lastName: string };
+  origin?: OrderOrigin;
+  /** Enlace "Ver mi pedido" sin iniciar sesión. */
+  viewUrl?: string;
   shippingData: ShippingData;
   payment: PaymentData;
   billing: BillingData;

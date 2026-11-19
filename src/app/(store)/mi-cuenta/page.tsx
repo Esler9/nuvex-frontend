@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { PageTransition } from "@/components/page-transition";
 import { AccountHome } from "@/components/account/account-home";
 
 export const metadata: Metadata = { title: "Mi cuenta", robots: { index: false, follow: false } };
 
 export default function Page() {
-  return <AccountHome />;
+  return (
+    <PageTransition>
+      <AccountHome />
+    </PageTransition>
+  );
 }

@@ -8,6 +8,9 @@ type Props = {
   freeShipping: boolean;
   discount: number;
   coupon?: string;
+  /** Promoción de la tienda (p. ej. "Oferta especial 5%"). */
+  promoDiscount?: number;
+  promoLabel?: string;
   total: number;
   onRemoveCoupon?: () => void;
   /** Etiqueta junto al total (p. ej. "Pagado"). */
@@ -15,7 +18,7 @@ type Props = {
 };
 
 /** Resumen de montos: subtotal, envío, cupón y total. */
-export function OrderSummary({ subtotal, shipping, freeShipping, discount, coupon, total, onRemoveCoupon, totalBadge }: Props) {
+export function OrderSummary({ subtotal, shipping, freeShipping, discount, coupon, promoDiscount = 0, promoLabel, total, onRemoveCoupon, totalBadge }: Props) {
   return (
     <dl className="space-y-2.5 text-sm">
       <div className="flex justify-between gap-3">
@@ -26,6 +29,12 @@ export function OrderSummary({ subtotal, shipping, freeShipping, discount, coupo
         <dt className="text-muted">Envío</dt>
         <dd className={freeShipping ? "font-semibold text-success" : "font-semibold"}>{freeShipping ? "Gratis" : gtq(shipping)}</dd>
       </div>
+      {promoDiscount > 0 && (
+        <div className="flex justify-between gap-3 text-primary-strong">
+          <dt className="font-medium">{promoLabel || "Oferta especial"}</dt>
+          <dd className="font-semibold">−{gtq(promoDiscount)}</dd>
+        </div>
+      )}
       {coupon && discount > 0 && (
         <div className="flex items-center justify-between gap-3 text-success">
           <dt className="flex items-center gap-1 font-medium">

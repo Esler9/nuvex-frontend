@@ -15,8 +15,8 @@ export default async function PanelLayout({ children }: Readonly<{ children: Rea
       </a>
       <header className="sticky top-0 z-30 border-b border-border bg-card">
         <div className="container-shell flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-3">
-          <div className="flex items-center gap-6">
-            <Link href="/admin/productos" className="text-sm font-bold">{siteConfig.name} <span className="font-normal text-muted">Admin</span></Link>
+          <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-2">
+            <Link href="/admin/pedidos" className="text-sm font-bold">{siteConfig.name} <span className="font-normal text-muted">Admin</span></Link>
             <AdminNav />
           </div>
           <div className="flex items-center gap-3 text-sm">

@@ -7,3 +7,6 @@ out/
 *.log
 .DS_Store
 *.tsbuildinfo
+
+# Datos provisionales del servidor (pedidos, clientes, facturas): nunca al repositorio
+.data/

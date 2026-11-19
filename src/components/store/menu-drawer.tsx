@@ -20,7 +20,7 @@ function SectionTitle({ children }: { children: string }) {
 }
 
 export function MenuDrawer() {
-  const { panel, closePanel, openPanel, customer, notify } = useStore();
+  const { panel, closePanel, openAccount, customer, notify } = useStore();
   const router = useRouter();
   const [confirmLogout, setConfirmLogout] = useState(false);
   const close = () => closePanel("menu");
@@ -69,10 +69,15 @@ export function MenuDrawer() {
             </div>
           ) : (
             <div className="mb-2 px-3">
-              <p className="text-sm text-muted">Inicia sesión para ver tu información.</p>
-              <button type="button" onClick={() => openPanel("account")} className="mt-2 inline-flex min-h-11 items-center rounded-lg border border-primary px-4 text-sm font-semibold text-primary-strong transition-colors hover:bg-primary-soft">
-                Iniciar sesión
-              </button>
+              <p className="text-sm text-muted">Crea tu cuenta para dar seguimiento a tu pedido.</p>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <button type="button" onClick={() => openAccount("login")} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-primary px-4 text-sm font-semibold text-primary-strong transition-colors hover:bg-primary-soft">
+                  Iniciar sesión
+                </button>
+                <button type="button" onClick={() => openAccount("register")} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-primary bg-primary px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-strong">
+                  Crear cuenta
+                </button>
+              </div>
             </div>
           )}
           <AccountLinks onNavigate={close} />
@@ -88,6 +93,12 @@ export function MenuDrawer() {
         <section>
           <SectionTitle>Ayuda</SectionTitle>
           <ul>
+            <li>
+              <Link href="/consultar-pedido" onClick={close} className={rowClass}>
+                Consultar mi pedido
+                <ChevronRight aria-hidden className="size-4 text-muted" />
+              </Link>
+            </li>
             <li>
               <Link href={siteConfig.helpLinks[0].href} onClick={close} className={rowClass}>
                 {siteConfig.helpLinks[0].label}

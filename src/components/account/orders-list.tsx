@@ -7,6 +7,7 @@ import type { Order } from "@/types/account";
 import { EmptyBlock } from "@/components/account/account-shell";
 import { ProductThumb, StatusPill } from "@/components/account/status-ui";
 import { ui } from "@/components/ui/styles";
+import { forward } from "@/components/page-transition";
 import { formatDate, gtq } from "@/lib/format";
 import { isInProgress } from "@/lib/order-status";
 
@@ -64,7 +65,7 @@ export function OrdersList({ orders }: { orders: Order[] }) {
                   <ProductThumb src={o.lines[0]?.image} size="size-14" />
                   <div className="min-w-0 flex-1">
                     <p className="font-bold">
-                      <Link href={`/mi-cuenta/compras/${o.id}`} className="after:absolute after:inset-0 after:content-['']">
+                      <Link href={`/mi-cuenta/compras/${o.id}`} transitionTypes={forward} className="after:absolute after:inset-0 after:content-['']">
                         Compra #{o.id}
                       </Link>
                     </p>

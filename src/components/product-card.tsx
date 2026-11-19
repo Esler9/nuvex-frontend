@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Smartphone, Star } from "lucide-react";
-import { money } from "@/lib/format";
-import { brandOrMaterial, discountPercent, hasFastShipping, hasFreeShipping, ratingInfo, regularPriceLabel } from "@/lib/product-meta";
+import { brandOrMaterial, discountPercent, hasFastShipping, hasFreeShipping, ratingInfo } from "@/lib/product-meta";
 import { siteConfig } from "@/lib/site-config";
 import type { CardVariant, Product } from "@/types/content";
 import { FavoriteButton } from "@/components/favorite-button";
 import { ProductBadge } from "@/components/product-badge";
+import { PromoPrice } from "@/components/promo-price";
+import { forward } from "@/components/page-transition";
 
 type Props = { product: Product; variant?: CardVariant; headingLevel?: 2 | 3 | 4 };
 
@@ -18,7 +19,6 @@ export function ProductCard({ product, variant = 2, headingLevel = 2 }: Props) {
   const Heading = headingLevel === 4 ? "h4" : headingLevel === 3 ? "h3" : "h2";
   const href = "/productos/" + encodeURIComponent(product.slug);
   const discount = discountPercent(product);
-  const before = regularPriceLabel(product);
   const rating = ratingInfo(product);
   const brand = brandOrMaterial(product);
   const freeShipping = hasFreeShipping(product);
@@ -78,20 +78,12 @@ export function ProductCard({ product, variant = 2, headingLevel = 2 }: Props) {
         </div>
 
         <Heading className="line-clamp-2 min-h-10 text-sm font-medium leading-5 text-foreground">
-          <Link href={href} className="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-primary">
+          <Link href={href} transitionTypes={forward} className="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-primary">
             {product.name}
           </Link>
         </Heading>
 
-        <div className="flex items-baseline justify-between gap-2">
-          <p className="text-lg font-bold leading-6 text-foreground">{money(product)}</p>
-          {before && (
-            <p className="text-xs text-muted line-through">
-              <span className="sr-only">Precio anterior: </span>
-              {before}
-            </p>
-          )}
-        </div>
+        <PromoPrice product={product} variant="card" />
 
         <div className="mt-auto flex min-h-4 items-center justify-between gap-2 text-xs font-semibold">
           {freeShipping ? <span className="text-accent-text">Envío gratis</span> : <span />}

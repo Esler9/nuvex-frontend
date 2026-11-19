@@ -82,7 +82,7 @@ function demoOrders(email: string): Order[] {
 
 export function demoAccount(customer: Customer): AccountData {
   return {
-    customer,
+    customer: { firstName: customer.name, lastName: "", ...customer },
     addresses: [{ ...shippingData, id: "addr-casa", label: "Casa", email: customer.email, primary: true }],
     billing: [{ ...billing, id: "bill-cf" }],
     orders: demoOrders(customer.email),

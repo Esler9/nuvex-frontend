@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageTransition } from "@/components/page-transition";
 import { notFound } from "next/navigation";
 import { getCardVariantForProduct, getProduct, getProductOptions, getProductReviews, money } from "@/lib/api";
 import { brandName, deliveryEstimate, parseProductInfo, ratingInfo } from "@/lib/product-meta";
@@ -53,7 +54,7 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <>
+    <PageTransition kind="detail">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <ProductView product={product} options={options} style={style} video={info.video} delivery={deliveryEstimate()}>
         <ProductInfoSection info={info} />
@@ -62,6 +63,6 @@ export default async function ProductPage({ params }: Props) {
         <RecentlyViewed current={product} />
         <SuggestedProducts productId={product.id} category={product.categories?.[0]?.slug} />
       </ProductView>
-    </>
+    </PageTransition>
   );
 }

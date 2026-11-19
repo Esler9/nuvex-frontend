@@ -14,11 +14,12 @@ import { ui } from "@/components/ui/styles";
 import { checkCoupon, useAccount } from "@/lib/account-store";
 import { couponState, orderTotals } from "@/lib/checkout";
 import { gtq } from "@/lib/format";
+import { cartPromotion } from "@/lib/promotions";
 
 type Props = { coupon: Coupon | null; onCoupon: (c: Coupon | null) => void; onContinue: () => void };
 
 export function CartStep({ coupon, onCoupon, onContinue }: Props) {
-  const { lines, subtotal, setQuantity, removeItem } = useStore();
+  const { lines, subtotal, setQuantity, removeItem, promotions } = useStore();
   const account = useAccount();
   const [toRemove, setToRemove] = useState<CartLine | null>(null);
   const [code, setCode] = useState("");
@@ -37,7 +38,8 @@ export function CartStep({ coupon, onCoupon, onContinue }: Props) {
     );
   }
 
-  const t = orderTotals(subtotal, coupon?.value ?? 0);
+  const promo = cartPromotion(lines, promotions, Boolean(account));
+  const t = orderTotals(subtotal, coupon?.value ?? 0, promo.discount);
   const available = (account?.coupons ?? []).filter((c) => couponState(c) === "disponible" && c.code !== coupon?.code);
 
   function apply(raw: string) {
@@ -140,7 +142,7 @@ export function CartStep({ coupon, onCoupon, onContinue }: Props) {
         </section>
 
         <section aria-label="Resumen de la compra" className={ui.card}>
-          <OrderSummary subtotal={t.subtotal} shipping={t.shipping} freeShipping={t.freeShipping} discount={t.discount} coupon={coupon?.code} total={t.total} onRemoveCoupon={() => onCoupon(null)} />
+          <OrderSummary subtotal={t.subtotal} shipping={t.shipping} freeShipping={t.freeShipping} promoDiscount={t.promoDiscount} promoLabel={promo.label} discount={t.discount} coupon={coupon?.code} total={t.total} onRemoveCoupon={() => onCoupon(null)} />
           {!t.freeShipping && (
             <p className="mt-3 flex items-center gap-2 rounded-lg bg-primary-soft p-3 text-sm">
               <Truck aria-hidden className="size-4 shrink-0 text-primary-strong" />

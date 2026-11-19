@@ -12,8 +12,9 @@ import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { MediaGallery } from "@/components/product-detail/media-gallery";
 import { ShareButton } from "@/components/product-detail/share-button";
 import { OptionPicker } from "@/components/product-detail/option-picker";
-import { formatMoney, money } from "@/lib/format";
-import { brandName, priceInCents, ratingInfo, regularPriceLabel, stockInfo } from "@/lib/product-meta";
+import { formatMoney } from "@/lib/format";
+import { PromoPrice } from "@/components/promo-price";
+import { brandName, priceInCents, ratingInfo, stockInfo } from "@/lib/product-meta";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
 type Props = {
@@ -56,7 +57,6 @@ export function ProductView({ product, options, style, video, delivery, children
   const displayName = option ? `${product.name} · ${option.label}` : product.name;
   const sku = view.sku;
   const stock = stockInfo(view);
-  const before = regularPriceLabel(view);
   const rating = ratingInfo(product);
   const brand = brandName(product);
   const white = style === 1;
@@ -71,7 +71,7 @@ export function ProductView({ product, options, style, video, delivery, children
 
   function buy() {
     if (!stock.inStock) return;
-    if (addItem({ ...view, name: displayName })) {
+    if (addItem({ ...view, name: displayName }, product.id)) {
       setToast(true);
       window.setTimeout(() => setToast(false), 2200);
     }
@@ -153,15 +153,9 @@ export function ProductView({ product, options, style, video, delivery, children
       <div className="container-shell mt-6 grid gap-4 lg:grid-cols-2 lg:gap-x-10">
         <section aria-label="Existencia y precio">
           <p className={`text-sm font-semibold ${stockTone[stock.tone]}`}>{stock.label}</p>
-          <p className="mt-1 flex flex-wrap items-baseline gap-x-3">
-            <span className="text-3xl font-black">A solo {money(view)}</span>
-            {before && (
-              <s className="text-base text-muted">
-                <span className="sr-only">Precio anterior: </span>
-                {before}
-              </s>
-            )}
-          </p>
+          <div className="mt-1">
+            <PromoPrice product={view} parentId={product.id} variant="detail" prefix="A solo " />
+          </div>
           {!stock.inStock && notifyHref && (
             <div className="mt-3">
               <a href={notifyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-primary bg-card px-4 text-sm font-semibold text-primary-strong hover:bg-primary-soft">
@@ -221,13 +215,7 @@ export function ProductView({ product, options, style, video, delivery, children
       <div className="buy-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/75 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
         <div className="container-shell flex h-[72px] items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-xl font-black leading-tight">{money(view)}</p>
-            {before && (
-              <s className="text-xs text-muted">
-                <span className="sr-only">Precio anterior: </span>
-                {before}
-              </s>
-            )}
+            <PromoPrice product={view} parentId={product.id} variant="bar" />
           </div>
           {whatsappHref && (
             <a href={whatsappHref} target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp" className="grid size-12 shrink-0 place-items-center rounded-lg bg-whatsapp text-white">

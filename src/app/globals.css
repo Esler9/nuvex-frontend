@@ -25,6 +25,7 @@
   --divider:#d9dce2;         /* líneas separadoras */
   --pending:#cbd0d8;         /* pasos pendientes (orden de compra, estado del pedido) */
   --strike:#9ca3af;          /* precios tachados */
+  --favorite:#ef4444;        /* corazón de favoritos seleccionado */
 }
 @theme inline{
   --font-sans:var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -52,6 +53,7 @@
   --color-divider:var(--divider);
   --color-pending:var(--pending);
   --color-strike:var(--strike);
+  --color-favorite:var(--favorite);
   --shadow-card:0 1px 2px rgb(16 24 40 / .04), 0 2px 8px rgb(16 24 40 / .04);
   --shadow-card-hover:0 4px 16px rgb(16 24 40 / .08);
 }
@@ -99,3 +101,26 @@ html:has(dialog[open]){overflow:hidden}
 /* Detalle de producto */
 body:has(.buy-bar){padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 .sold-out-line{background:linear-gradient(to top right,transparent calc(50% - 1px),var(--muted) calc(50% - 1px),var(--muted) calc(50% + 1px),transparent calc(50% + 1px))}
+
+/* Corazón de favoritos: latido al marcarlo */
+@keyframes heart-beat{0%{transform:scale(1)}45%{transform:scale(1.25)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:no-preference){.heart-beat{animation:heart-beat .2s ease-out}}
+
+/* Transición entre páginas (View Transitions). El detalle entra desde la derecha y cubre la
+   página anterior, que se queda quieta; al regresar sale hacia la derecha. */
+::view-transition{pointer-events:none}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+::view-transition-group(site-header){animation:none;z-index:100}
+::view-transition-old(site-header){display:none}
+::view-transition-new(site-header){animation:none}
+::view-transition-group(.vt-stay){animation:none;z-index:1}
+::view-transition-old(.vt-stay),::view-transition-new(.vt-stay){animation:none}
+::view-transition-group(.vt-slide-in),::view-transition-group(.vt-slide-out){animation:none;z-index:2}
+::view-transition-new(.vt-slide-in){animation:vt-in .3s cubic-bezier(.2,.8,.2,1) both;box-shadow:-12px 0 32px rgb(16 24 40 / .08)}
+::view-transition-old(.vt-slide-out){animation:vt-out .3s cubic-bezier(.4,0,.6,1) both;box-shadow:-12px 0 32px rgb(16 24 40 / .08)}
+@keyframes vt-in{from{transform:translateX(100%)}}
+@keyframes vt-out{to{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important}
+}
+html[data-vt="off"]::view-transition-group(*),html[data-vt="off"]::view-transition-old(*),html[data-vt="off"]::view-transition-new(*){animation:none !important}

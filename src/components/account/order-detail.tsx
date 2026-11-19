@@ -58,12 +58,13 @@ function statusSteps(o: Order): Step[] {
   ];
 }
 
-export function OrderDetail({ account, orderId }: { account: AccountData; orderId: string }) {
+/** Detalle de una compra. Con cuenta permite opinar y reenviar comprobante; desde "Ver mi pedido" es solo consulta. */
+export function OrderDetail({ account = null, orderId, order: given }: { account?: AccountData | null; orderId: string; order?: Order | null }) {
   const { notify } = useStore();
   const [review, setReview] = useState<ReviewTarget | null>(null);
   const [zoom, setZoom] = useState(false);
   const [receipt, setReceipt] = useState(false);
-  const order = account.orders.find((o) => o.id === orderId);
+  const order = given ?? account?.orders.find((o) => o.id === orderId);
 
   if (!order) {
     return (
@@ -106,8 +107,8 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
           <div className="mt-4 rounded-lg bg-danger/10 p-3 text-sm text-danger">
             <p className="font-semibold">No pudimos verificar tu pago</p>
             {o.rejectionReason && <p className="mt-1">{o.rejectionReason}</p>}
-            <a href="#comprobante" className={`${ui.btnPrimary} mt-3 w-full sm:w-auto`}>
-              Subir otro comprobante
+            <a href={account ? "#comprobante" : (support ?? "#")} className={`${ui.btnPrimary} mt-3 w-full sm:w-auto`}>
+              {account ? "Subir otro comprobante" : "Enviar otro comprobante por WhatsApp"}
             </a>
           </div>
         )}
@@ -164,7 +165,7 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
         </h2>
         <ul className="mt-3 divide-y divide-border">
           {o.lines.map((l) => {
-            const mine = reviewFor(account, o.id, l.productId);
+            const mine = account ? reviewFor(account, o.id, l.productId) : undefined;
             return (
               <li key={l.productId} className="py-3">
                 <div className="flex gap-3">
@@ -178,7 +179,7 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
                   </div>
                   <p className="text-sm font-bold">{gtq(l.unitPrice * l.quantity)}</p>
                 </div>
-                {delivered && (
+                {delivered && account && (
                   <button type="button" onClick={() => setReview({ orderId: o.id, line: l, existing: mine })} className={`${mine ? ui.btnGhost : ui.btnOutline} mt-3 min-h-11 w-full text-sm`}>
                     <Star aria-hidden className="size-4" />
                     {mine ? "Ver mi opinión" : reviewPoints ? `Calificar y ganar ${reviewPoints} pts` : "Calificar"}
@@ -201,6 +202,8 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
             freeShipping={o.shipping === 0}
             discount={o.discount}
             coupon={o.coupon}
+            promoDiscount={o.promoDiscount}
+            promoLabel={o.promoLabel}
             total={o.total}
             totalBadge={<span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${paid ? "bg-success/10 text-success" : "bg-accent-soft text-accent-text"}`}>{paid ? "Pagado" : "Pendiente de confirmación"}</span>}
           />
@@ -221,7 +224,8 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
         <div className="border-t border-border pt-4">
           <h3 className="font-semibold">Forma de pago</h3>
           <p className="mt-1">
-            {methodLabel[o.payment.method]} · {o.payment.bank}
+            {methodLabel[o.payment.method]}
+            {o.payment.bank ? ` · ${o.payment.bank}` : ""}
           </p>
           <p className="text-muted">
             Boleta o referencia {o.payment.reference} · {formatDate(`${o.payment.date}T12:00:00-06:00`)}
@@ -251,7 +255,7 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
         </div>
       </section>
 
-      {o.status === "rechazado" && (
+      {o.status === "rechazado" && account && (
         <section id="comprobante" aria-labelledby="reenviar-titulo" className="scroll-mt-40">
           <h2 id="reenviar-titulo" className="mb-3 text-lg font-bold">
             Subir otro comprobante
@@ -284,7 +288,8 @@ export function OrderDetail({ account, orderId }: { account: AccountData; orderI
       <Sheet open={receipt} onClose={() => setReceipt(false)} title="Comprobante de pago" side="center">
         <div className="text-sm">
           <p>
-            {methodLabel[o.payment.method]} · {o.payment.bank} · Ref. {o.payment.reference}
+            {methodLabel[o.payment.method]}
+            {o.payment.bank ? ` · ${o.payment.bank}` : ""} · Ref. {o.payment.reference}
           </p>
           {o.payment.receiptName && <p className="mt-1 text-muted">Archivo: {o.payment.receiptName}</p>}
           <p className="mt-3 rounded-lg bg-surface p-3 text-muted">

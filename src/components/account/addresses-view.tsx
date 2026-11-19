@@ -99,8 +99,21 @@ function AddressForm({ initial, onSave }: { initial: Draft; onSave: (d: Draft) =
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // Reutiliza las reglas de la orden de compra (sin los campos de facturación).
-    const all = validateCheckoutForm({ ...d, references: d.references ?? "", needsNit: false, nit: "", nitName: "", dpi: "0000000000000" });
+    const { firstName, lastName, ...all } = validateCheckoutForm({
+      ...d,
+      firstName: d.fullName,
+      lastName: d.fullName,
+      references: d.references ?? "",
+      needsNit: false,
+      nit: "",
+      invoiceName: "ok ok",
+      invoiceNameEdited: false,
+      dpi: "0000000000000",
+      createAccount: false,
+      password: "",
+    });
     const found: Record<string, string> = { ...all };
+    if (firstName || lastName || d.fullName.trim().length < 3) found.fullName = "Escribe el nombre de quien recibe.";
     if (d.label.trim().length < 2) found.label = "Ponle un nombre, por ejemplo Casa o Trabajo.";
     setErrors(found);
     const first = Object.keys(found)[0];

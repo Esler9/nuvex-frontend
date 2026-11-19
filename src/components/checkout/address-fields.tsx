@@ -4,8 +4,9 @@ import type { ShippingData } from "@/types/account";
 import { SelectField, TextField } from "@/components/ui/field";
 import { departments, guatemala } from "@/lib/guatemala";
 
-type Errors = Partial<Record<keyof ShippingData, string>>;
-type Props = { value: ShippingData; onChange: (patch: Partial<ShippingData>) => void; errors: Errors; idPrefix: string };
+type Value = Pick<ShippingData, "department" | "municipality" | "zone" | "street" | "references">;
+type Errors = Partial<Record<keyof Value, string>>;
+type Props = { value: Value; onChange: (patch: Partial<Value>) => void; errors: Errors; idPrefix: string };
 
 /** Dirección de entrega en Guatemala: departamento → municipio, zona y dirección exacta. */
 export function AddressFields({ value, onChange, errors, idPrefix }: Props) {

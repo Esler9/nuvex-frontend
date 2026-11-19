@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageTransition } from "@/components/page-transition";
 import Link from "next/link";
 import { getCategories, getProducts, isDemoCatalog } from "@/lib/api";
 import { siteConfig } from "@/lib/site-config";
@@ -30,6 +31,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   const title = q ? `Resultados para “${q}”` : catName || "Nuestros productos";
 
   return (
+    <PageTransition>
     <section className="container-shell py-10 sm:py-16">
       <p className="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-primary-strong">Catálogo</p>
       <h1 className="mb-3 text-3xl font-bold sm:text-5xl">{title}</h1>
@@ -50,5 +52,6 @@ export default async function ProductsPage({ searchParams }: Props) {
         </div>
       )}
     </section>
+    </PageTransition>
   );
 }
