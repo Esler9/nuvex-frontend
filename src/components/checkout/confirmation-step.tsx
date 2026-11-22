@@ -58,7 +58,7 @@ export function ConfirmationStep({ order, demo, guest }: { order: Order; demo: b
         <ul className="mt-3 divide-y divide-border">
           {order.lines.map((l) => (
             <li key={l.productId} className="flex items-center gap-3 py-3">
-              <ProductThumb src={l.image} size="size-14" badge={l.quantity} />
+              <ProductThumb src={l.image} name={l.name} size="size-14" badge={l.quantity} />
               <div className="min-w-0 flex-1 text-sm">
                 <p className="line-clamp-2 font-semibold">{l.name}</p>
                 <p className="text-muted">

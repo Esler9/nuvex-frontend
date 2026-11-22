@@ -169,7 +169,7 @@ export function OrderDetail({ account = null, orderId, order: given }: { account
             return (
               <li key={l.productId} className="py-3">
                 <div className="flex gap-3">
-                  <ProductThumb src={l.image} size="size-16" badge={l.quantity} />
+                  <ProductThumb src={l.image} name={l.name} size="size-16" badge={l.quantity} />
                   <div className="min-w-0 flex-1 text-sm">
                     <Link href={`/productos/${encodeURIComponent(l.slug)}`} className="line-clamp-2 font-semibold hover:text-primary-strong">
                       {l.name}

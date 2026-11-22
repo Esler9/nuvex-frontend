@@ -1,4 +1,5 @@
-import { CircleAlert, CircleCheck, CircleCheckBig, Clock, Package, PackageCheck, Smartphone, Truck, Check } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleCheckBig, Clock, Package, PackageCheck, Truck, Check } from "lucide-react";
+import { ProductImagePlaceholder, placeholderBg } from "@/components/product-image-placeholder";
 import type { OrderStatus } from "@/types/account";
 import { statusMeta, toneClasses, type StatusIcon as IconName } from "@/lib/order-status";
 
@@ -30,10 +31,10 @@ export function StatusPill({ status }: { status: OrderStatus }) {
 }
 
 /** Foto del producto o marcador accesible si no hay imagen real. */
-export function ProductThumb({ src, size = "size-16", badge }: { src?: string; size?: string; badge?: number }) {
+export function ProductThumb({ src, name, size = "size-16", badge }: { src?: string; name: string; size?: string; badge?: number }) {
   return (
-    <span className={`relative grid ${size} shrink-0 place-items-center rounded-xl bg-surface`}>
-      {src ? <img src={src} alt="" width={64} height={64} loading="lazy" className="size-full rounded-xl object-contain p-1" /> : <Smartphone aria-hidden className="size-6 text-primary/50" />}
+    <span className={`relative grid ${size} shrink-0 place-items-center rounded-xl ${src ? "bg-surface" : placeholderBg(name)}`}>
+      {src ? <img src={src} alt="" width={64} height={64} loading="lazy" className="size-full rounded-xl object-contain p-1" /> : <ProductImagePlaceholder name={name} iconClassName="size-6" />}
       {badge !== undefined && badge > 1 && (
         <span className="absolute -right-1.5 -top-1.5 grid size-6 place-items-center rounded-full bg-primary-strong text-xs font-bold text-white" aria-label={`${badge} unidades`}>
           {badge}

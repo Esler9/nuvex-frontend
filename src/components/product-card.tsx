@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Smartphone, Star } from "lucide-react";
+import { Star } from "lucide-react";
+import { ProductImagePlaceholder, placeholderBg } from "@/components/product-image-placeholder";
 import { brandOrMaterial, discountPercent, hasFastShipping, hasFreeShipping, ratingInfo } from "@/lib/product-meta";
 import { siteConfig } from "@/lib/site-config";
 import type { CardVariant, Product } from "@/types/content";
@@ -27,7 +28,7 @@ export function ProductCard({ product, variant = 2, headingLevel = 2 }: Props) {
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card transition-shadow hover:shadow-card-hover">
       <div className={variant === 2 ? "p-2" : ""}>
-        <div className={`relative flex aspect-square items-center justify-center ${variant === 2 ? "rounded-lg bg-image-well" : "bg-card"}`}>
+        <div className={`relative flex aspect-square items-center justify-center ${variant === 2 ? "rounded-lg" : ""} ${img ? (variant === 2 ? "bg-image-well" : "bg-card") : placeholderBg(product.name, product.categories)}`}>
           {img ? (
             <img
               src={img.thumbnail || img.src}
@@ -39,10 +40,7 @@ export function ProductCard({ product, variant = 2, headingLevel = 2 }: Props) {
               className="h-full w-full object-contain p-3 transition-transform duration-300 motion-safe:group-hover:scale-105"
             />
           ) : (
-            <div className="flex flex-col items-center gap-2 text-muted">
-              <Smartphone aria-hidden className="size-10 text-primary/50" strokeWidth={1.5} />
-              <span className="text-xs">Imagen próximamente</span>
-            </div>
+            <ProductImagePlaceholder name={product.name} categories={product.categories} />
           )}
           {discount > 0 && (
             <span className="absolute left-2 top-2 rounded-full bg-accent px-2 py-0.5 text-[11px] font-bold leading-4 text-accent-foreground">

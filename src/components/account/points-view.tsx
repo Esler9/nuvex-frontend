@@ -72,7 +72,7 @@ export function PointsView({ account }: { account: AccountData }) {
           <ul className="mt-3 divide-y divide-border">
             {pending.map(({ orderId, line }) => (
               <li key={`${orderId}-${line.productId}`} className="flex flex-wrap items-center gap-3 py-3">
-                <ProductThumb src={line.image} size="size-12" />
+                <ProductThumb src={line.image} name={line.name} size="size-12" />
                 <div className="min-w-0 flex-1 text-sm">
                   <p className="line-clamp-2 font-semibold">{line.name}</p>
                   <p className="text-xs text-muted">Compra #{orderId}</p>

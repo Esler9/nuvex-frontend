@@ -37,7 +37,7 @@ export function ReviewsView({ account }: { account: AccountData }) {
           <ul className="mt-3 divide-y divide-border">
             {pending.map(({ orderId, line }) => (
               <li key={`${orderId}-${line.productId}`} className="flex flex-wrap items-center gap-3 py-3">
-                <ProductThumb src={line.image} size="size-12" />
+                <ProductThumb src={line.image} name={line.name} size="size-12" />
                 <div className="min-w-0 flex-1 text-sm">
                   <p className="line-clamp-2 font-semibold">{line.name}</p>
                   <p className="text-xs text-muted">Compra #{orderId}</p>
@@ -58,7 +58,7 @@ export function ReviewsView({ account }: { account: AccountData }) {
           {account.reviews.map((r) => (
             <li key={r.id} className={ui.card}>
               <div className="flex gap-3">
-                <ProductThumb src={r.image} size="size-14" />
+                <ProductThumb src={r.image} name={r.productName} size="size-14" />
                 <div className="min-w-0 flex-1">
                   <Link href={`/productos/${encodeURIComponent(r.slug)}`} className="line-clamp-2 text-sm font-semibold hover:text-primary-strong">
                     {r.productName}

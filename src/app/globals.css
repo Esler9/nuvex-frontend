@@ -26,6 +26,15 @@
   --pending:#cbd0d8;         /* pasos pendientes (orden de compra, estado del pedido) */
   --strike:#9ca3af;          /* precios tachados */
   --favorite:#ef4444;        /* corazón de favoritos seleccionado */
+  --footer:#1a1a1a;          /* fondo del footer */
+  --footer-line:#3a3a3a;     /* bordes y separador del footer */
+  /* Fondos temporales de productos sin imagen (pastel) e ícono en tono fuerte */
+  --ph-lavender:#eef0fb; --ph-lavender-icon:#5b6cf0;  /* protectores, fundas, micas */
+  --ph-orange:#fff1e8;   --ph-orange-icon:#ff7a2f;    /* cargadores y cubos */
+  --ph-teal:#e3f4f2;     --ph-teal-icon:#4db6ac;      /* cables */
+  --ph-mint:#e6f7ee;     --ph-mint-icon:#3fa672;      /* adaptadores */
+  --ph-peach:#fbefe8;    --ph-peach-icon:#e0a98a;     /* memorias */
+  --ph-gold:#fff7db;     --ph-gold-icon:#d9a000;      /* audífonos, micrófonos y otros */
 }
 @theme inline{
   --font-sans:var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -54,6 +63,20 @@
   --color-pending:var(--pending);
   --color-strike:var(--strike);
   --color-favorite:var(--favorite);
+  --color-footer:var(--footer);
+  --color-footer-line:var(--footer-line);
+  --color-ph-lavender:var(--ph-lavender);
+  --color-ph-lavender-icon:var(--ph-lavender-icon);
+  --color-ph-orange:var(--ph-orange);
+  --color-ph-orange-icon:var(--ph-orange-icon);
+  --color-ph-teal:var(--ph-teal);
+  --color-ph-teal-icon:var(--ph-teal-icon);
+  --color-ph-mint:var(--ph-mint);
+  --color-ph-mint-icon:var(--ph-mint-icon);
+  --color-ph-peach:var(--ph-peach);
+  --color-ph-peach-icon:var(--ph-peach-icon);
+  --color-ph-gold:var(--ph-gold);
+  --color-ph-gold-icon:var(--ph-gold-icon);
   --shadow-card:0 1px 2px rgb(16 24 40 / .04), 0 2px 8px rgb(16 24 40 / .04);
   --shadow-card-hover:0 4px 16px rgb(16 24 40 / .08);
 }

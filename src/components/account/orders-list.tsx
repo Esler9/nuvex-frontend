@@ -62,7 +62,7 @@ export function OrdersList({ orders }: { orders: Order[] }) {
             return (
               <li key={o.id} className="relative">
                 <div className="flex items-center gap-3 p-4">
-                  <ProductThumb src={o.lines[0]?.image} size="size-14" />
+                  <ProductThumb src={o.lines[0]?.image} name={o.lines[0]?.name ?? ""} size="size-14" />
                   <div className="min-w-0 flex-1">
                     <p className="font-bold">
                       <Link href={`/mi-cuenta/compras/${o.id}`} transitionTypes={forward} className="after:absolute after:inset-0 after:content-['']">

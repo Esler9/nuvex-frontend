@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Smartphone } from "lucide-react";
+import { Heart } from "lucide-react";
+import { ProductImagePlaceholder, placeholderBg } from "@/components/product-image-placeholder";
 import { Sheet } from "@/components/ui/sheet";
 import { useStore } from "@/components/store/store-provider";
 import { AddToCartButton } from "@/components/add-to-cart-button";
@@ -31,11 +32,11 @@ export function FavoritesDrawer() {
               const href = "/productos/" + encodeURIComponent(product.slug);
               return (
                 <li key={product.id} className="flex gap-3 py-4">
-                  <Link href={href} transitionTypes={forward} onClick={close} tabIndex={-1} aria-hidden className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-lg bg-surface">
+                  <Link href={href} transitionTypes={forward} onClick={close} tabIndex={-1} aria-hidden className={`grid size-20 shrink-0 place-items-center overflow-hidden rounded-lg ${img ? "bg-surface" : placeholderBg(product.name, product.categories)}`}>
                     {img ? (
                       <img src={img.src} alt="" width={80} height={80} loading="lazy" className="size-full object-contain p-1.5" />
                     ) : (
-                      <Smartphone className="size-7 text-primary/50" />
+                      <ProductImagePlaceholder name={product.name} categories={product.categories} iconClassName="size-8" />
                     )}
                   </Link>
                   <div className="flex min-w-0 flex-1 flex-col gap-1">

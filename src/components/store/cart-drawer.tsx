@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Minus, Plus, ShoppingBag, Smartphone, Trash2, Truck } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2, Truck } from "lucide-react";
+import { ProductImagePlaceholder, placeholderBg } from "@/components/product-image-placeholder";
 import { Sheet } from "@/components/ui/sheet";
 import { useStore } from "@/components/store/store-provider";
 import { formatMoney } from "@/lib/format";
@@ -63,11 +64,11 @@ export function CartDrawer() {
           <ul className="divide-y divide-border">
             {lines.map((line) => (
               <li key={line.id} className="flex gap-3 py-4">
-                <div className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-xl bg-surface">
+                <div className={`grid size-20 shrink-0 place-items-center overflow-hidden rounded-xl ${line.image ? "bg-surface" : placeholderBg(line.name, line.categories)}`}>
                   {line.image ? (
                     <img src={line.image} alt="" width={80} height={80} loading="lazy" className="size-full object-contain p-1.5" />
                   ) : (
-                    <Smartphone aria-hidden className="size-7 text-primary/50" />
+                    <ProductImagePlaceholder name={line.name} categories={line.categories} iconClassName="size-8" />
                   )}
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">

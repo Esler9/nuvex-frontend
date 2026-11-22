@@ -56,7 +56,7 @@ export function CartStep({ coupon, onCoupon, onContinue }: Props) {
         <ul className={`${ui.card} divide-y divide-border py-0 sm:py-0`}>
           {lines.map((line) => (
             <li key={line.id} className="flex gap-3 py-4">
-              <ProductThumb src={line.image} size="size-20" />
+              <ProductThumb src={line.image} name={line.name} size="size-20" />
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">

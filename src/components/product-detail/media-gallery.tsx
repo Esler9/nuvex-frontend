@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Maximize, Play, Smartphone, Volume2, VolumeX } from "lucide-react";
+import { Maximize, Play, Volume2, VolumeX } from "lucide-react";
 import type { Product } from "@/types/content";
+import { ProductImagePlaceholder, placeholderBg } from "@/components/product-image-placeholder";
 
 type Slide = { type: "image"; src: string; alt: string } | { type: "video"; src: string };
 
@@ -55,9 +56,8 @@ export function MediaGallery({ images, video, name, framed, actions }: Props) {
     <div aria-roledescription="galería" aria-label={`Imágenes de ${name}`}>
       <div className="relative">
         {slides.length === 0 ? (
-          <div className={`flex aspect-square flex-col items-center justify-center gap-2 text-muted ${framed ? box : "bg-card"}`}>
-            <Smartphone aria-hidden className="size-16 text-primary/50" strokeWidth={1.25} />
-            <span className="text-sm">Imagen próximamente</span>
+          <div className={`flex aspect-square items-center justify-center ${framed ? "rounded-xl" : ""} ${placeholderBg(name)}`}>
+            <ProductImagePlaceholder name={name} iconClassName="size-16" />
           </div>
         ) : (
           <div className={`overflow-hidden ${box}`}>
